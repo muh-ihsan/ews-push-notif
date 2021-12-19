@@ -3,15 +3,13 @@ const admin = require("firebase-admin");
 
 admin.initializeApp();
 
-// TODO: Batas value over dan under pada code ini masih sementara. Ganti jadi value yang pasti.
-
 exports.sendPanelVoltR = functions.database
   .ref("ewsApp/panel-pompa/{panelPompaId}/voltR")
   .onWrite(async (change, context) => {
     const panelPompaId = context.params.panelPompaId;
-    let namaPanel = "";
 
     // Get Monitor name
+    let namaPanel = "";
     await admin
       .database()
       .ref(`/ewsApp/panel-pompa/${panelPompaId}/nama`)
@@ -19,6 +17,20 @@ exports.sendPanelVoltR = functions.database
       .then((snapshot) => {
         namaPanel = snapshot.val();
         functions.logger.log("Nama Monitor: ", snapshot.val());
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
+
+    // Get gauge value
+    await admin
+      .database()
+      .ref(`ewsApp/gaugeValue/panel-pompa/volt`)
+      .once("value")
+      .then((snapshot) => {
+        const gaugeValue = snapshot.val();
+        valueMin = gaugeValue.min;
+        valueMax = gaugeValue.max;
       })
       .catch((err) => {
         functions.logger.error("Error: ", err);
@@ -35,7 +47,7 @@ exports.sendPanelVoltR = functions.database
         body: `${namaPanel} sedang mengalami undervolt! Value: ${currentValue}`,
       },
     };
-    if (currentValue < 200 && beforeValue >= 200) {
+    if (currentValue < valueMin && beforeValue >= valueMin) {
       admin
         .messaging()
         .sendToTopic("notif", notifUnderPayload)
@@ -53,7 +65,7 @@ exports.sendPanelVoltR = functions.database
         body: `${namaPanel} sedang mengalami Overvolt! Value: ${currentValue}`,
       },
     };
-    if (currentValue > 300 && beforeValue <= 300) {
+    if (currentValue > valueMax && beforeValue <= valueMax) {
       admin
         .messaging()
         .sendToTopic("notif", notifOverPayload)
@@ -66,310 +78,385 @@ exports.sendPanelVoltR = functions.database
     }
   });
 
-// exports.sendPanelVoltS = functions.database
-//   .ref("ewsApp/panel-pompa/{panelPompaId}/voltS")
-//   .onWrite(async (change, context) => {
-//     const panelPompaId = context.params.panelPompaId;
-//     let namaPanel = "";
+exports.sendPanelVoltS = functions.database
+  .ref("ewsApp/panel-pompa/{panelPompaId}/voltS")
+  .onWrite(async (change, context) => {
+    const panelPompaId = context.params.panelPompaId;
 
-//     // Get Monitor name
-//     await admin
-//       .database()
-//       .ref(`/ewsApp/panel-pompa/${panelPompaId}/nama`)
-//       .once("value")
-//       .then((snapshot) => {
-//         namaPanel = snapshot.val();
-//         functions.logger.log("Nama Monitor: ", snapshot.val());
-//       })
-//       .catch((err) => {
-//         functions.logger.error("Error: ", err);
-//       });
+    // Get Monitor name
+    let namaPanel = "";
+    await admin
+      .database()
+      .ref(`/ewsApp/panel-pompa/${panelPompaId}/nama`)
+      .once("value")
+      .then((snapshot) => {
+        namaPanel = snapshot.val();
+        functions.logger.log("Nama Monitor: ", snapshot.val());
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
 
-//     const currentValue = change.after.val();
-//     const beforeValue = change.before.val();
-//     functions.logger.log("currentValue: ", currentValue);
-//     functions.logger.log("beforeValue: ", beforeValue);
+    // Get gauge value
+    let valueMin, valueMax;
+    await admin
+      .database()
+      .ref(`ewsApp/gaugeValue/panel-pompa/volt`)
+      .once("value")
+      .then((snapshot) => {
+        const gaugeValue = snapshot.val();
+        valueMin = gaugeValue.min;
+        valueMax = gaugeValue.max;
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
 
-//     const notifUnderPayload = {
-//       notification: {
-//         title: "Volt S Undervolt!",
-//         body: `${namaPanel} sedang mengalami undervolt! Value: ${currentValue}`,
-//       },
-//     };
-//     if (currentValue < 200 && beforeValue >= 200) {
-//       admin
-//         .messaging()
-//         .sendToTopic("notif", notifUnderPayload)
-//         .then(() => {
-//           console.log("FCM: Notification sends successfully.");
-//         })
-//         .catch((err) => {
-//           console.log("Error FCM: ", err);
-//         });
-//     }
+    const currentValue = change.after.val();
+    const beforeValue = change.before.val();
+    functions.logger.log("currentValue: ", currentValue);
+    functions.logger.log("beforeValue: ", beforeValue);
 
-//     const notifOverPayload = {
-//       notification: {
-//         title: "Volt S Overvolt!",
-//         body: `${namaPanel} sedang mengalami Overvolt! Value: ${currentValue}`,
-//       },
-//     };
-//     if (currentValue > 300 && beforeValue <= 300) {
-//       admin
-//         .messaging()
-//         .sendToTopic("notif", notifOverPayload)
-//         .then(() => {
-//           console.log("FCM: Notification sends successfully.");
-//         })
-//         .catch((err) => {
-//           console.log("Error FCM: ", err);
-//         });
-//     }
-//   });
+    const notifUnderPayload = {
+      notification: {
+        title: "Volt S Undervolt!",
+        body: `${namaPanel} sedang mengalami undervolt! Value: ${currentValue}`,
+      },
+    };
+    if (currentValue < valueMin && beforeValue >= valueMin) {
+      admin
+        .messaging()
+        .sendToTopic("notif", notifUnderPayload)
+        .then(() => {
+          console.log("FCM: Notification sends successfully.");
+        })
+        .catch((err) => {
+          console.log("Error FCM: ", err);
+        });
+    }
 
-// exports.sendPanelVoltT = functions.database
-//   .ref("ewsApp/panel-pompa/{panelPompaId}/voltT")
-//   .onWrite(async (change, context) => {
-//     const panelPompaId = context.params.panelPompaId;
-//     let namaPanel = "";
+    const notifOverPayload = {
+      notification: {
+        title: "Volt S Overvolt!",
+        body: `${namaPanel} sedang mengalami Overvolt! Value: ${currentValue}`,
+      },
+    };
+    if (currentValue > valueMax && beforeValue <= valueMax) {
+      admin
+        .messaging()
+        .sendToTopic("notif", notifOverPayload)
+        .then(() => {
+          console.log("FCM: Notification sends successfully.");
+        })
+        .catch((err) => {
+          console.log("Error FCM: ", err);
+        });
+    }
+  });
 
-//     // Get Monitor name
-//     await admin
-//       .database()
-//       .ref(`/ewsApp/panel-pompa/${panelPompaId}/nama`)
-//       .once("value")
-//       .then((snapshot) => {
-//         namaPanel = snapshot.val();
-//         functions.logger.log("Nama Monitor: ", snapshot.val());
-//       })
-//       .catch((err) => {
-//         functions.logger.error("Error: ", err);
-//       });
+exports.sendPanelVoltT = functions.database
+  .ref("ewsApp/panel-pompa/{panelPompaId}/voltT")
+  .onWrite(async (change, context) => {
+    const panelPompaId = context.params.panelPompaId;
 
-//     const currentValue = change.after.val();
-//     const beforeValue = change.before.val();
-//     functions.logger.log("currentValue: ", currentValue);
-//     functions.logger.log("beforeValue: ", beforeValue);
+    // Get Monitor name
+    let namaPanel = "";
+    await admin
+      .database()
+      .ref(`/ewsApp/panel-pompa/${panelPompaId}/nama`)
+      .once("value")
+      .then((snapshot) => {
+        namaPanel = snapshot.val();
+        functions.logger.log("Nama Monitor: ", snapshot.val());
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
 
-//     const notifUnderPayload = {
-//       notification: {
-//         title: "Volt T Undervolt!",
-//         body: `${namaPanel} sedang mengalami undervolt! Value: ${currentValue}`,
-//       },
-//     };
-//     if (currentValue < 200 && beforeValue >= 200) {
-//       admin
-//         .messaging()
-//         .sendToTopic("notif", notifUnderPayload)
-//         .then(() => {
-//           console.log("FCM: Notification sends successfully.");
-//         })
-//         .catch((err) => {
-//           console.log("Error FCM: ", err);
-//         });
-//     }
+    // Get gauge value
+    let valueMin, valueMax;
+    await admin
+      .database()
+      .ref(`ewsApp/gaugeValue/panel-pompa/volt`)
+      .once("value")
+      .then((snapshot) => {
+        const gaugeValue = snapshot.val();
+        valueMin = gaugeValue.min;
+        valueMax = gaugeValue.max;
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
 
-//     const notifOverPayload = {
-//       notification: {
-//         title: "Volt T Overvolt!",
-//         body: `${namaPanel} sedang mengalami Overvolt! Value: ${currentValue}`,
-//       },
-//     };
-//     if (currentValue > 300 && beforeValue <= 300) {
-//       admin
-//         .messaging()
-//         .sendToTopic("notif", notifOverPayload)
-//         .then(() => {
-//           console.log("FCM: Notification sends successfully.");
-//         })
-//         .catch((err) => {
-//           console.log("Error FCM: ", err);
-//         });
-//     }
-//   });
+    const currentValue = change.after.val();
+    const beforeValue = change.before.val();
+    functions.logger.log("currentValue: ", currentValue);
+    functions.logger.log("beforeValue: ", beforeValue);
 
-// exports.sendPanelCurrentR = functions.database
-//   .ref("ewsApp/panel-pompa/{panelPompaId}/currentR")
-//   .onWrite(async (change, context) => {
-//     const panelPompaId = context.params.panelPompaId;
-//     let namaPanel = "";
+    const notifUnderPayload = {
+      notification: {
+        title: "Volt T Undervolt!",
+        body: `${namaPanel} sedang mengalami undervolt! Value: ${currentValue}`,
+      },
+    };
+    if (currentValue < valueMin && beforeValue >= valueMin) {
+      admin
+        .messaging()
+        .sendToTopic("notif", notifUnderPayload)
+        .then(() => {
+          console.log("FCM: Notification sends successfully.");
+        })
+        .catch((err) => {
+          console.log("Error FCM: ", err);
+        });
+    }
 
-//     // Get Monitor name
-//     await admin
-//       .database()
-//       .ref(`/ewsApp/panel-pompa/${panelPompaId}/nama`)
-//       .once("value")
-//       .then((snapshot) => {
-//         namaPanel = snapshot.val();
-//         functions.logger.log("Nama Monitor: ", snapshot.val());
-//       })
-//       .catch((err) => {
-//         functions.logger.error("Error: ", err);
-//       });
+    const notifOverPayload = {
+      notification: {
+        title: "Volt T Overvolt!",
+        body: `${namaPanel} sedang mengalami Overvolt! Value: ${currentValue}`,
+      },
+    };
+    if (currentValue > valueMax && beforeValue <= valueMax) {
+      admin
+        .messaging()
+        .sendToTopic("notif", notifOverPayload)
+        .then(() => {
+          console.log("FCM: Notification sends successfully.");
+        })
+        .catch((err) => {
+          console.log("Error FCM: ", err);
+        });
+    }
+  });
 
-//     const currentValue = change.after.val();
-//     const beforeValue = change.before.val();
-//     functions.logger.log("currentValue: ", currentValue);
-//     functions.logger.log("beforeValue: ", beforeValue);
-//     const notifUnderPayload = {
-//       notification: {
-//         title: "Current R Undercurrent!",
-//         body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue}`,
-//       },
-//     };
+exports.sendPanelCurrentR = functions.database
+  .ref("ewsApp/panel-pompa/{panelPompaId}/currentR")
+  .onWrite(async (change, context) => {
+    const panelPompaId = context.params.panelPompaId;
 
-//     if (currentValue < 500 && beforeValue >= 500) {
-//       admin
-//         .messaging()
-//         .sendToTopic("notif", notifUnderPayload)
-//         .then(() => {
-//           console.log("FCM: Notification sends successfully.");
-//         })
-//         .catch((err) => {
-//           console.log("Error FCM: ", err);
-//         });
-//     }
+    // Get Monitor name
+    let namaPanel = "";
+    await admin
+      .database()
+      .ref(`/ewsApp/panel-pompa/${panelPompaId}/nama`)
+      .once("value")
+      .then((snapshot) => {
+        namaPanel = snapshot.val();
+        functions.logger.log("Nama Monitor: ", snapshot.val());
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
 
-//     const notifOverPayload = {
-//       notification: {
-//         title: "Current R Overcurrent!",
-//         body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue}`,
-//       },
-//     };
-//     if (currentValue > 3000 && beforeValue <= 3000) {
-//       admin
-//         .messaging()
-//         .sendToTopic("notif", notifOverPayload)
-//         .then(() => {
-//           console.log("FCM: Notification sends successfully.");
-//         })
-//         .catch((err) => {
-//           console.log("Error FCM: ", err);
-//         });
-//     }
-//   });
+    // Get gauge value
+    let valueMin, valueMax;
+    await admin
+      .database()
+      .ref(`ewsApp/gaugeValue/panel-pompa/current`)
+      .once("value")
+      .then((snapshot) => {
+        const gaugeValue = snapshot.val();
+        valueMin = gaugeValue.min;
+        valueMax = gaugeValue.max;
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
 
-// exports.sendPanelCurrentS = functions.database
-//   .ref("ewsApp/panel-pompa/{panelPompaId}/currentS")
-//   .onWrite(async (change, context) => {
-//     const panelPompaId = context.params.panelPompaId;
-//     let namaPanel = "";
+    const currentValue = change.after.val();
+    const beforeValue = change.before.val();
+    functions.logger.log("currentValue: ", currentValue);
+    functions.logger.log("beforeValue: ", beforeValue);
+    const notifUnderPayload = {
+      notification: {
+        title: "Current R Undercurrent!",
+        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue}`,
+      },
+    };
 
-//     // Get Monitor name
-//     await admin
-//       .database()
-//       .ref(`/ewsApp/panel-pompa/${panelPompaId}/nama`)
-//       .once("value")
-//       .then((snapshot) => {
-//         namaPanel = snapshot.val();
-//         functions.logger.log("Nama Monitor: ", snapshot.val());
-//       })
-//       .catch((err) => {
-//         functions.logger.error("Error: ", err);
-//       });
+    if (currentValue < valueMin && beforeValue >= valueMin) {
+      admin
+        .messaging()
+        .sendToTopic("notif", notifUnderPayload)
+        .then(() => {
+          console.log("FCM: Notification sends successfully.");
+        })
+        .catch((err) => {
+          console.log("Error FCM: ", err);
+        });
+    }
 
-//     const currentValue = change.after.val();
-//     const beforeValue = change.before.val();
-//     functions.logger.log("currentValue: ", currentValue);
-//     functions.logger.log("beforeValue: ", beforeValue);
-//     const notifUnderPayload = {
-//       notification: {
-//         title: "Current S Undercurrent!",
-//         body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue}`,
-//       },
-//     };
+    const notifOverPayload = {
+      notification: {
+        title: "Current R Overcurrent!",
+        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue}`,
+      },
+    };
+    if (currentValue > valueMax && beforeValue <= valueMax) {
+      admin
+        .messaging()
+        .sendToTopic("notif", notifOverPayload)
+        .then(() => {
+          console.log("FCM: Notification sends successfully.");
+        })
+        .catch((err) => {
+          console.log("Error FCM: ", err);
+        });
+    }
+  });
 
-//     if (currentValue < 500 && beforeValue >= 500) {
-//       admin
-//         .messaging()
-//         .sendToTopic("notif", notifUnderPayload)
-//         .then(() => {
-//           console.log("FCM: Notification sends successfully.");
-//         })
-//         .catch((err) => {
-//           console.log("Error FCM: ", err);
-//         });
-//     }
+exports.sendPanelCurrentS = functions.database
+  .ref("ewsApp/panel-pompa/{panelPompaId}/currentS")
+  .onWrite(async (change, context) => {
+    const panelPompaId = context.params.panelPompaId;
 
-//     const notifOverPayload = {
-//       notification: {
-//         title: "Current S Overcurrent!",
-//         body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue}`,
-//       },
-//     };
-//     if (currentValue > 3000 && beforeValue <= 3000) {
-//       admin
-//         .messaging()
-//         .sendToTopic("notif", notifOverPayload)
-//         .then(() => {
-//           console.log("FCM: Notification sends successfully.");
-//         })
-//         .catch((err) => {
-//           console.log("Error FCM: ", err);
-//         });
-//     }
-//   });
+    // Get Monitor name
+    let namaPanel = "";
+    await admin
+      .database()
+      .ref(`/ewsApp/panel-pompa/${panelPompaId}/nama`)
+      .once("value")
+      .then((snapshot) => {
+        namaPanel = snapshot.val();
+        functions.logger.log("Nama Monitor: ", snapshot.val());
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
 
-// exports.sendPanelCurrentT = functions.database
-//   .ref("ewsApp/panel-pompa/{panelPompaId}/currentT")
-//   .onWrite(async (change, context) => {
-//     const panelPompaId = context.params.panelPompaId;
-//     let namaPanel = "";
+    // Get gauge value
+    let valueMin, valueMax;
+    await admin
+      .database()
+      .ref(`ewsApp/gaugeValue/panel-pompa/current`)
+      .once("value")
+      .then((snapshot) => {
+        const gaugeValue = snapshot.val();
+        valueMin = gaugeValue.min;
+        valueMax = gaugeValue.max;
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
 
-//     // Get Monitor name
-//     await admin
-//       .database()
-//       .ref(`/ewsApp/panel-pompa/${panelPompaId}/nama`)
-//       .once("value")
-//       .then((snapshot) => {
-//         namaPanel = snapshot.val();
-//         functions.logger.log("Nama Monitor: ", snapshot.val());
-//       })
-//       .catch((err) => {
-//         functions.logger.error("Error: ", err);
-//       });
+    const currentValue = change.after.val();
+    const beforeValue = change.before.val();
+    functions.logger.log("currentValue: ", currentValue);
+    functions.logger.log("beforeValue: ", beforeValue);
+    const notifUnderPayload = {
+      notification: {
+        title: "Current S Undercurrent!",
+        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue}`,
+      },
+    };
 
-//     const currentValue = change.after.val();
-//     const beforeValue = change.before.val();
-//     functions.logger.log("currentValue: ", currentValue);
-//     functions.logger.log("beforeValue: ", beforeValue);
-//     const notifUnderPayload = {
-//       notification: {
-//         title: "Current T Undercurrent!",
-//         body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue}`,
-//       },
-//     };
+    if (currentValue < valueMin && beforeValue >= valueMin) {
+      admin
+        .messaging()
+        .sendToTopic("notif", notifUnderPayload)
+        .then(() => {
+          console.log("FCM: Notification sends successfully.");
+        })
+        .catch((err) => {
+          console.log("Error FCM: ", err);
+        });
+    }
 
-//     if (currentValue < 500 && beforeValue >= 500) {
-//       admin
-//         .messaging()
-//         .sendToTopic("notif", notifUnderPayload)
-//         .then(() => {
-//           console.log("FCM: Notification sends successfully.");
-//         })
-//         .catch((err) => {
-//           console.log("Error FCM: ", err);
-//         });
-//     }
+    const notifOverPayload = {
+      notification: {
+        title: "Current S Overcurrent!",
+        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue}`,
+      },
+    };
+    if (currentValue > valueMax && beforeValue <= valueMax) {
+      admin
+        .messaging()
+        .sendToTopic("notif", notifOverPayload)
+        .then(() => {
+          console.log("FCM: Notification sends successfully.");
+        })
+        .catch((err) => {
+          console.log("Error FCM: ", err);
+        });
+    }
+  });
 
-//     const notifOverPayload = {
-//       notification: {
-//         title: "Current T Overcurrent!",
-//         body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue}`,
-//       },
-//     };
-//     if (currentValue > 3000 && beforeValue <= 3000) {
-//       admin
-//         .messaging()
-//         .sendToTopic("notif", notifOverPayload)
-//         .then(() => {
-//           console.log("FCM: Notification sends successfully.");
-//         })
-//         .catch((err) => {
-//           console.log("Error FCM: ", err);
-//         });
-//     }
-//   });
+exports.sendPanelCurrentT = functions.database
+  .ref("ewsApp/panel-pompa/{panelPompaId}/currentT")
+  .onWrite(async (change, context) => {
+    const panelPompaId = context.params.panelPompaId;
+
+    // Get Monitor name
+    let namaPanel = "";
+    await admin
+      .database()
+      .ref(`/ewsApp/panel-pompa/${panelPompaId}/nama`)
+      .once("value")
+      .then((snapshot) => {
+        namaPanel = snapshot.val();
+        functions.logger.log("Nama Monitor: ", snapshot.val());
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
+
+    // Get gauge value
+    let valueMin, valueMax;
+    await admin
+      .database()
+      .ref(`ewsApp/gaugeValue/panel-pompa/current`)
+      .once("value")
+      .then((snapshot) => {
+        const gaugeValue = snapshot.val();
+        valueMin = gaugeValue.min;
+        valueMax = gaugeValue.max;
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
+
+    const currentValue = change.after.val();
+    const beforeValue = change.before.val();
+    functions.logger.log("currentValue: ", currentValue);
+    functions.logger.log("beforeValue: ", beforeValue);
+    const notifUnderPayload = {
+      notification: {
+        title: "Current T Undercurrent!",
+        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue}`,
+      },
+    };
+
+    if (currentValue < valueMin && beforeValue >= valueMin) {
+      admin
+        .messaging()
+        .sendToTopic("notif", notifUnderPayload)
+        .then(() => {
+          console.log("FCM: Notification sends successfully.");
+        })
+        .catch((err) => {
+          console.log("Error FCM: ", err);
+        });
+    }
+
+    const notifOverPayload = {
+      notification: {
+        title: "Current T Overcurrent!",
+        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue}`,
+      },
+    };
+    if (currentValue > valueMax && beforeValue <= valueMax) {
+      admin
+        .messaging()
+        .sendToTopic("notif", notifOverPayload)
+        .then(() => {
+          console.log("FCM: Notification sends successfully.");
+        })
+        .catch((err) => {
+          console.log("Error FCM: ", err);
+        });
+    }
+  });
 
 exports.sendLED = functions.database
   .ref("ewsApp/panel-pompa/{panelPompaId}/{ledId}/value")
@@ -441,6 +528,21 @@ exports.sendFlowRate = functions.database
         functions.logger.error("Error: ", err);
       });
 
+    // Get gauge value
+    let valueMin, valueMax;
+    await admin
+      .database()
+      .ref(`ewsApp/gaugeValue/flow-meter/flowRate`)
+      .once("value")
+      .then((snapshot) => {
+        const gaugeValue = snapshot.val();
+        valueMin = gaugeValue.min;
+        valueMax = gaugeValue.max;
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
+
     const notifUnderPayload = {
       notification: {
         title: "Pipa Underflow!",
@@ -448,7 +550,7 @@ exports.sendFlowRate = functions.database
       },
     };
 
-    if (currentValue < 800 && beforeValue >= 800) {
+    if (currentValue < valueMin && beforeValue >= valueMin) {
       admin
         .messaging()
         .sendToTopic("notif", notifUnderPayload)
@@ -466,7 +568,7 @@ exports.sendFlowRate = functions.database
         body: `Pipa ${flowMeterName} sedang mengalami overflow! Value: ${currentValue}`,
       },
     };
-    if (currentValue > 300 && beforeValue <= 300) {
+    if (currentValue > valueMax && beforeValue <= valueMax) {
       admin
         .messaging()
         .sendToTopic("notif", notifOverPayload)
@@ -502,6 +604,21 @@ exports.sendVelocity = functions.database
         functions.logger.error("Error: ", err);
       });
 
+    // Get gauge value
+    let valueMin, valueMax;
+    await admin
+      .database()
+      .ref(`ewsApp/gaugeValue/flow-meter/velocity`)
+      .once("value")
+      .then((snapshot) => {
+        const gaugeValue = snapshot.val();
+        valueMin = gaugeValue.min;
+        valueMax = gaugeValue.max;
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
+
     const notifUnderPayload = {
       notification: {
         title: "Pipa Under Velocity!",
@@ -509,7 +626,7 @@ exports.sendVelocity = functions.database
       },
     };
 
-    if (currentValue < 0.7 && beforeValue >= 0.7) {
+    if (currentValue < valueMin && beforeValue >= valueMin) {
       admin
         .messaging()
         .sendToTopic("notif", notifUnderPayload)
@@ -527,7 +644,7 @@ exports.sendVelocity = functions.database
         body: `Pipa ${flowMeterName} sedang mengalami over velocity! Value: ${currentValue}`,
       },
     };
-    if (currentValue > 3 && beforeValue <= 3) {
+    if (currentValue > valueMax && beforeValue <= valueMax) {
       admin
         .messaging()
         .sendToTopic("notif", notifOverPayload)
@@ -563,6 +680,21 @@ exports.sendTempInlet = functions.database
         functions.logger.error("Error: ", err);
       });
 
+    // Get gauge value
+    let valueMin, valueMax;
+    await admin
+      .database()
+      .ref(`ewsApp/gaugeValue/flow-meter/temperature`)
+      .once("value")
+      .then((snapshot) => {
+        const gaugeValue = snapshot.val();
+        valueMin = gaugeValue.min;
+        valueMax = gaugeValue.max;
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
+
     const notifUnderPayload = {
       notification: {
         title: "Temperature Inlet Pipa Under Heat!",
@@ -570,7 +702,7 @@ exports.sendTempInlet = functions.database
       },
     };
 
-    if (currentValue < 5 && beforeValue >= 5) {
+    if (currentValue < valueMin && beforeValue >= valueMin) {
       admin
         .messaging()
         .sendToTopic("notif", notifUnderPayload)
@@ -588,7 +720,7 @@ exports.sendTempInlet = functions.database
         body: `Inlet pipa ${flowMeterName} sedang mengalami over heat! Value: ${currentValue}`,
       },
     };
-    if (currentValue > 75 && beforeValue <= 75) {
+    if (currentValue > valueMax && beforeValue <= valueMax) {
       admin
         .messaging()
         .sendToTopic("notif", notifOverPayload)
@@ -624,6 +756,21 @@ exports.sendTempOutlet = functions.database
         functions.logger.error("Error: ", err);
       });
 
+    // Get gauge value
+    let valueMin, valueMax;
+    await admin
+      .database()
+      .ref(`ewsApp/gaugeValue/flow-meter/temperature`)
+      .once("value")
+      .then((snapshot) => {
+        const gaugeValue = snapshot.val();
+        valueMin = gaugeValue.min;
+        valueMax = gaugeValue.max;
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
+
     const notifUnderPayload = {
       notification: {
         title: "Temperature Outlet Pipa Under Heat!",
@@ -631,7 +778,7 @@ exports.sendTempOutlet = functions.database
       },
     };
 
-    if (currentValue < 5 && beforeValue >= 5) {
+    if (currentValue < valueMin && beforeValue >= valueMin) {
       admin
         .messaging()
         .sendToTopic("notif", notifUnderPayload)
@@ -649,7 +796,7 @@ exports.sendTempOutlet = functions.database
         body: `Outlet pipa ${flowMeterName} sedang mengalami over heat! Value: ${currentValue}`,
       },
     };
-    if (currentValue > 75 && beforeValue <= 75) {
+    if (currentValue > valueMax && beforeValue <= valueMax) {
       admin
         .messaging()
         .sendToTopic("notif", notifOverPayload)
@@ -662,69 +809,104 @@ exports.sendTempOutlet = functions.database
     }
   });
 
-// exports.sendPressure = functions.database
-//   .ref("pressureSensor/{pressureSensorId}/pressurepsi")
-//   .onWrite(async (change, context) => {
-//     const pressureSensorId = context.params.pressureSensorId;
-//     const currentValue = change.after.val();
-//     const beforeValue = change.before.val();
-//     functions.logger.log("currentValue: ", currentValue);
-//     functions.logger.log("beforeValue: ", beforeValue);
-
-//     // Get Nama Pressure Solar
-//     const pressureSolarName = "Pressure Sensor " + pressureSensorId;
-//     functions.logger.info("Nama Pressure sensor: ", pressureSolarName);
-
-//     const notifUnderPayload = {
-//       notification: {
-//         title: "Pipa Under Pressure!",
-//         body: `Pipa ${pressureSolarName} sedang mengalami under pressure! Value: ${currentValue}`,
-//       },
-//     };
-
-//     if (currentValue < 30 && beforeValue >= 30) {
-//       admin
-//         .messaging()
-//         .sendToTopic("notif", notifUnderPayload)
-//         .then(() => {
-//           console.log("FCM: Notification sends successfully.");
-//         })
-//         .catch((err) => {
-//           console.log("Error FCM: ", err);
-//         });
-//     }
-
-//     const notifOverPayload = {
-//       notification: {
-//         title: "Pipa Over Pressure!",
-//         body: `Pipa ${pressureSolarName} sedang mengalami over pressure! Value: ${currentValue}`,
-//       },
-//     };
-//     if (currentValue > 80 && beforeValue <= 80) {
-//       admin
-//         .messaging()
-//         .sendToTopic("notif", notifOverPayload)
-//         .then(() => {
-//           console.log("FCM: Notification sends successfully.");
-//         })
-//         .catch((err) => {
-//           console.log("Error FCM: ", err);
-//         });
-//     }
-//   });
-
-exports.sendBattery = functions.database
-  .ref("pressureSensor/{pressureSensorId}/voltage")
+exports.sendPressure = functions.database
+  .ref("ewsApp/pressure-solar/{pressureSolarId}/pressurePsi")
   .onWrite(async (change, context) => {
-    const pressureSensorId = context.params.pressureSensorId;
+    const pressureSolarId = context.params.pressureSolarId;
     const currentValue = change.after.val();
     const beforeValue = change.before.val();
     functions.logger.log("currentValue: ", currentValue);
     functions.logger.log("beforeValue: ", beforeValue);
 
     // Get Nama Pressure Solar
-    const pressureSolarName = "Pressure Sensor " + pressureSensorId;
-    functions.logger.info("Nama Pressure sensor: ", pressureSolarName);
+    let pressureSolarName;
+    await admin
+      .database()
+      .ref(`ewsApp/pressure-solar/${pressureSolarId}/nama`)
+      .once("value")
+      .then((snapshot) => {
+        pressureSolarName = snapshot.val();
+        functions.logger.log("Nama Monitor: ", pressureSolarName);
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
+
+    // Get gauge value
+    let valueMin, valueMax;
+    await admin
+      .database()
+      .ref(`ewsApp/gaugeValue/pressure-solar/pressurePsi`)
+      .once("value")
+      .then((snapshot) => {
+        const gaugeValue = snapshot.val();
+        valueMin = gaugeValue.min;
+        valueMax = gaugeValue.max;
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
+
+    const notifUnderPayload = {
+      notification: {
+        title: "Pipa Under Pressure!",
+        body: `Pipa ${pressureSolarName} sedang mengalami under pressure! Value: ${currentValue}`,
+      },
+    };
+
+    if (currentValue < valueMin && beforeValue >= valueMin) {
+      admin
+        .messaging()
+        .sendToTopic("notif", notifUnderPayload)
+        .then(() => {
+          console.log("FCM: Notification sends successfully.");
+        })
+        .catch((err) => {
+          console.log("Error FCM: ", err);
+        });
+    }
+
+    const notifOverPayload = {
+      notification: {
+        title: "Pipa Over Pressure!",
+        body: `Pipa ${pressureSolarName} sedang mengalami over pressure! Value: ${currentValue}`,
+      },
+    };
+    if (currentValue > valueMax && beforeValue <= valueMax) {
+      admin
+        .messaging()
+        .sendToTopic("notif", notifOverPayload)
+        .then(() => {
+          console.log("FCM: Notification sends successfully.");
+        })
+        .catch((err) => {
+          console.log("Error FCM: ", err);
+        });
+    }
+  });
+
+exports.sendBattery = functions.database
+  .ref("ewsApp/pressure-solar/{pressureSolarId}/voltage")
+  .onWrite(async (change, context) => {
+    const pressureSolarId = context.params.pressureSolarId;
+    const currentValue = change.after.val();
+    const beforeValue = change.before.val();
+    functions.logger.log("currentValue: ", currentValue);
+    functions.logger.log("beforeValue: ", beforeValue);
+
+    // Get Nama Pressure Solar
+    let pressureSolarName;
+    await admin
+      .database()
+      .ref(`ewsApp/pressure-solar/${pressureSolarId}/nama`)
+      .once("value")
+      .then((snapshot) => {
+        pressureSolarName = snapshot.val();
+        functions.logger.log("Nama Monitor: ", pressureSolarName);
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
 
     const notifUnderPayload = {
       notification: {
@@ -747,9 +929,9 @@ exports.sendBattery = functions.database
   });
 
 exports.deteksiBocorPressure = functions.database
-  .ref("pressureSensor/{pressureSensorId}/pressurepsi")
+  .ref("ewsApp/pressure-solar/{pressureSolarId}/pressurePsi")
   .onWrite(async (change, context) => {
-    pressureSensorId = context.params.pressureSensorId;
+    pressureSolarId = context.params.pressureSolarId;
     const currentValue = change.after.val();
     const beforeValue = change.before.val();
     functions.logger.log("currentValue: ", currentValue);
@@ -764,7 +946,7 @@ exports.deteksiBocorPressure = functions.database
     let pressureData;
     await admin
       .database()
-      .ref(`pressureSensor`)
+      .ref(`ewsApp/pressure-solar`)
       .once("value")
       .then((snapshot) => {
         pressureData = snapshot.val();
@@ -776,9 +958,17 @@ exports.deteksiBocorPressure = functions.database
 
     functions.logger.log("PressureData return: ", pressureData);
 
-    for (let i = 1; i < pressureData.length; i++) {
-      const num1 = Number(pressureData[i]["pressurepsi"]);
-      const num2 = Number(pressureData[i + 1]["pressurepsi"]);
+    // Untuk menambah keys pada object ke array
+    const pressureKeys = Object.keys(pressureData);
+
+    for (let i = 0; i < pressureKeys.length; i++) {
+      // Jika sudah mencapai iterasi terakhir, break
+      if (i == pressureKeys.length - 1) {
+        break;
+      }
+
+      const num1 = Number(pressureData[pressureKeys[i]]["pressurePsi"]);
+      const num2 = Number(pressureData[pressureKeys[i + 1]]["pressurePsi"]);
 
       functions.logger.log("num1: ", num1);
       functions.logger.log("num2: ", num2);
