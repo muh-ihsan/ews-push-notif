@@ -29,6 +29,10 @@ exports.sendPanelVoltR = functions.database
     const valueMax = gaugeLimit.max;
 
     const notifUnderPayload = {
+      data: {
+        jenisMonitor: "PanelPompa",
+        monitorId: panelPompaId,
+      },
       notification: {
         title: "Volt R Undervolt!",
         body: `${namaPanel} sedang mengalami undervolt! Value: ${currentValue} V`,
@@ -39,6 +43,10 @@ exports.sendPanelVoltR = functions.database
     }
 
     const notifOverPayload = {
+      data: {
+        jenisMonitor: "PanelPompa",
+        monitorId: panelPompaId,
+      },
       notification: {
         title: "Volt R Overvolt!",
         body: `${namaPanel} sedang mengalami Overvolt! Value: ${currentValue} V`,
@@ -72,6 +80,10 @@ exports.sendPanelVoltS = functions.database
     const valueMax = gaugeLimit.max;
 
     const notifUnderPayload = {
+      data: {
+        jenisMonitor: "PanelPompa",
+        monitorId: panelPompaId,
+      },
       notification: {
         title: "Volt S Undervolt!",
         body: `${namaPanel} sedang mengalami undervolt! Value: ${currentValue} V`,
@@ -82,6 +94,10 @@ exports.sendPanelVoltS = functions.database
     }
 
     const notifOverPayload = {
+      data: {
+        jenisMonitor: "PanelPompa",
+        monitorId: panelPompaId,
+      },
       notification: {
         title: "Volt S Overvolt!",
         body: `${namaPanel} sedang mengalami Overvolt! Value: ${currentValue} V`,
@@ -115,6 +131,10 @@ exports.sendPanelVoltT = functions.database
     const valueMax = gaugeLimit.max;
 
     const notifUnderPayload = {
+      data: {
+        jenisMonitor: "PanelPompa",
+        monitorId: panelPompaId,
+      },
       notification: {
         title: "Volt T Undervolt!",
         body: `${namaPanel} sedang mengalami undervolt! Value: ${currentValue}`,
@@ -125,6 +145,10 @@ exports.sendPanelVoltT = functions.database
     }
 
     const notifOverPayload = {
+      data: {
+        jenisMonitor: "PanelPompa",
+        monitorId: panelPompaId,
+      },
       notification: {
         title: "Volt T Overvolt!",
         body: `${namaPanel} sedang mengalami Overvolt! Value: ${currentValue}`,
@@ -158,6 +182,10 @@ exports.sendPanelCurrentR = functions.database
     const valueMax = gaugeLimit.max;
 
     const notifUnderPayload = {
+      data: {
+        jenisMonitor: "PanelPompa",
+        monitorId: panelPompaId,
+      },
       notification: {
         title: "Current R Undercurrent!",
         body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue}`,
@@ -168,6 +196,10 @@ exports.sendPanelCurrentR = functions.database
     }
 
     const notifOverPayload = {
+      data: {
+        jenisMonitor: "PanelPompa",
+        monitorId: panelPompaId,
+      },
       notification: {
         title: "Current R Overcurrent!",
         body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue}`,
@@ -201,6 +233,10 @@ exports.sendPanelCurrentS = functions.database
     const valueMax = gaugeLimit.max;
 
     const notifUnderPayload = {
+      data: {
+        jenisMonitor: "PanelPompa",
+        monitorId: panelPompaId,
+      },
       notification: {
         title: "Current S Undercurrent!",
         body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue}`,
@@ -211,6 +247,10 @@ exports.sendPanelCurrentS = functions.database
     }
 
     const notifOverPayload = {
+      data: {
+        jenisMonitor: "PanelPompa",
+        monitorId: panelPompaId,
+      },
       notification: {
         title: "Current S Overcurrent!",
         body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue}`,
@@ -244,6 +284,10 @@ exports.sendPanelCurrentT = functions.database
     const valueMax = gaugeLimit.max;
 
     const notifUnderPayload = {
+      data: {
+        jenisMonitor: "PanelPompa",
+        monitorId: panelPompaId,
+      },
       notification: {
         title: "Current T Undercurrent!",
         body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue}`,
@@ -254,6 +298,10 @@ exports.sendPanelCurrentT = functions.database
     }
 
     const notifOverPayload = {
+      data: {
+        jenisMonitor: "PanelPompa",
+        monitorId: panelPompaId,
+      },
       notification: {
         title: "Current T Overcurrent!",
         body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue}`,
@@ -291,6 +339,10 @@ exports.sendLED = functions.database
     functions.logger.log("beforeValue: ", beforeValue);
 
     const notifPayload = {
+      data: {
+        jenisMonitor: "PanelPompa",
+        monitorId: panelPompaId,
+      },
       notification: {
         title: `${ledName} ON!`,
         body: `Lampu ${ledName} menyala`,
@@ -323,6 +375,10 @@ exports.sendFlowRate = functions.database
     const valueMax = gaugeLimit.max;
 
     const notifUnderPayload = {
+      data: {
+        jenisMonitor: "FlowMeter",
+        monitorId: flowMeterId,
+      },
       notification: {
         title: "Pipa Underflow!",
         body: `Pipa ${flowMeterName} sedang mengalami underflow! Value: ${currentValue} m3/h`,
@@ -333,6 +389,10 @@ exports.sendFlowRate = functions.database
     }
 
     const notifOverPayload = {
+      data: {
+        jenisMonitor: "FlowMeter",
+        monitorId: flowMeterId,
+      },
       notification: {
         title: "Pipa Overflow!",
         body: `Pipa ${flowMeterName} sedang mengalami overflow! Value: ${currentValue} m3/h`,
@@ -365,6 +425,10 @@ exports.sendVelocity = functions.database
     const valueMax = gaugeLimit.max;
 
     const notifUnderPayload = {
+      data: {
+        jenisMonitor: "FlowMeter",
+        monitorId: flowMeterId,
+      },
       notification: {
         title: "Pipa Under Velocity!",
         body: `Pipa ${flowMeterName} sedang mengalami under velocity! Value: ${currentValue} m/s`,
@@ -375,6 +439,10 @@ exports.sendVelocity = functions.database
     }
 
     const notifOverPayload = {
+      data: {
+        jenisMonitor: "FlowMeter",
+        monitorId: flowMeterId,
+      },
       notification: {
         title: "Pipa Over Velocity!",
         body: `Pipa ${flowMeterName} sedang mengalami over velocity! Value: ${currentValue} m/s`,
@@ -410,6 +478,10 @@ exports.sendTempInlet = functions.database
     const valueMax = gaugeLimit.max;
 
     const notifUnderPayload = {
+      data: {
+        jenisMonitor: "FlowMeter",
+        monitorId: flowMeterId,
+      },
       notification: {
         title: "Temperature Inlet Pipa Under Heat!",
         body: `Inlet pipa ${flowMeterName} sedang mengalami under heat! Value: ${currentValue} °C`,
@@ -420,6 +492,10 @@ exports.sendTempInlet = functions.database
     }
 
     const notifOverPayload = {
+      data: {
+        jenisMonitor: "FlowMeter",
+        monitorId: flowMeterId,
+      },
       notification: {
         title: "Temperature Inlet Pipa Over Heat!",
         body: `Inlet pipa ${flowMeterName} sedang mengalami over heat! Value: ${currentValue} °C`,
@@ -455,6 +531,10 @@ exports.sendTempOutlet = functions.database
     const valueMax = gaugeLimit.max;
 
     const notifUnderPayload = {
+      data: {
+        jenisMonitor: "FlowMeter",
+        monitorId: flowMeterId,
+      },
       notification: {
         title: "Temperature Outlet Pipa Under Heat!",
         body: `Outlet pipa ${flowMeterName} sedang mengalami under heat! Value: ${currentValue} °C`,
@@ -465,6 +545,10 @@ exports.sendTempOutlet = functions.database
     }
 
     const notifOverPayload = {
+      data: {
+        jenisMonitor: "FlowMeter",
+        monitorId: flowMeterId,
+      },
       notification: {
         title: "Temperature Outlet Pipa Over Heat!",
         body: `Outlet pipa ${flowMeterName} sedang mengalami over heat! Value: ${currentValue} °C`,
@@ -500,6 +584,10 @@ exports.sendPressure = functions.database
     const valueMax = gaugeLimit.max;
 
     const notifUnderPayload = {
+      data: {
+        jenisMonitor: "PressureSolar",
+        monitorId: pressureSolarId,
+      },
       notification: {
         title: "Pipa Under Pressure!",
         body: `Pipa ${pressureSolarName} sedang mengalami under pressure! Value: ${currentValue} psi`,
@@ -510,6 +598,10 @@ exports.sendPressure = functions.database
     }
 
     const notifOverPayload = {
+      data: {
+        jenisMonitor: "PressureSolar",
+        monitorId: pressureSolarId,
+      },
       notification: {
         title: "Pipa Over Pressure!",
         body: `Pipa ${pressureSolarName} sedang mengalami over pressure! Value: ${currentValue} psi`,
@@ -537,6 +629,10 @@ exports.sendBattery = functions.database
     );
 
     const notifPayload = {
+      data: {
+        jenisMonitor: "PressureSolar",
+        monitorId: pressureSolarId,
+      },
       notification: {
         title: "Low Battery!",
         body: `Baterai pada solar panel ${pressureSolarName} mencapai titik low. Value: ${currentValue}%`,
@@ -548,67 +644,71 @@ exports.sendBattery = functions.database
     }
   });
 
-exports.deteksiBocorPressure = functions.database
-  .ref("ewsApp/pressure-solar/{pressureSolarId}/pressurePsi")
-  .onWrite(async (change, context) => {
-    pressureSolarId = context.params.pressureSolarId;
+// exports.deteksiBocorPressure = functions.database
+//   .ref("ewsApp/pressure-solar/{pressureSolarId}/pressurePsi")
+//   .onWrite(async (change, context) => {
+//     pressureSolarId = context.params.pressureSolarId;
 
-    const currentValue = change.after.val();
-    const beforeValue = change.before.val();
-    functions.logger.log("currentValue: ", currentValue);
-    functions.logger.log("beforeValue: ", beforeValue);
+//     const currentValue = change.after.val();
+//     const beforeValue = change.before.val();
+//     functions.logger.log("currentValue: ", currentValue);
+//     functions.logger.log("beforeValue: ", beforeValue);
 
-    // Mengambil objek pada pressure solar
-    let pressureData;
-    await admin
-      .database()
-      .ref(`ewsApp/pressure-solar`)
-      .once("value")
-      .then((snapshot) => {
-        pressureData = snapshot.val();
-        functions.logger.log("Pressure data: ", snapshot.val());
-      })
-      .catch((err) => {
-        functions.logger.error("Error: ", err);
-      });
+//     // Mengambil objek pada pressure solar
+//     let pressureData;
+//     await admin
+//       .database()
+//       .ref(`ewsApp/pressure-solar`)
+//       .once("value")
+//       .then((snapshot) => {
+//         pressureData = snapshot.val();
+//         functions.logger.log("Pressure data: ", snapshot.val());
+//       })
+//       .catch((err) => {
+//         functions.logger.error("Error: ", err);
+//       });
 
-    functions.logger.log("PressureData return: ", pressureData);
+//     functions.logger.log("PressureData return: ", pressureData);
 
-    // Payload untuk notifikasi
-    const notifPayload = {
-      notification: {
-        title: "Terdapat anomali pada tekanan pipa!",
-        body: `Terdapat kemungkinan adanya kebocoran pada pipa.`,
-      },
-    };
+//     // Payload untuk notifikasi
+//     const notifPayload = {
+//       data: {
+//         jenisMonitor: "PressureSolar",
+//         monitorId: pressureSolarId,
+//       },
+//       notification: {
+//         title: "Terdapat anomali pada tekanan pipa!",
+//         body: `Terdapat kemungkinan adanya kebocoran pada pipa.`,
+//       },
+//     };
 
-    // Untuk menambah keys pada object ke array
-    const pressureKeys = Object.keys(pressureData);
+//     // Untuk menambah keys pada object ke array
+//     const pressureKeys = Object.keys(pressureData);
 
-    // Perbandingan nilai sensor
-    for (let i = 0; i < pressureKeys.length; i++) {
-      // Jika sudah mencapai iterasi terakhir, break
-      if (i == pressureKeys.length - 1) {
-        break;
-      }
+//     // Perbandingan nilai sensor
+//     for (let i = 0; i < pressureKeys.length; i++) {
+//       // Jika sudah mencapai iterasi terakhir, break
+//       if (i == pressureKeys.length - 1) {
+//         break;
+//       }
 
-      // Mengambil nilai pressure dari iterasi sekarang dan iterasi berikutnya
-      const num1 = Number(pressureData[pressureKeys[i]]["pressurePsi"]);
-      const num2 = Number(pressureData[pressureKeys[i + 1]]["pressurePsi"]);
+//       // Mengambil nilai pressure dari iterasi sekarang dan iterasi berikutnya
+//       const num1 = Number(pressureData[pressureKeys[i]]["pressurePsi"]);
+//       const num2 = Number(pressureData[pressureKeys[i + 1]]["pressurePsi"]);
 
-      functions.logger.log("num1: ", num1);
-      functions.logger.log("num2: ", num2);
+//       functions.logger.log("num1: ", num1);
+//       functions.logger.log("num2: ", num2);
 
-      // Perhitungan perbedaan antara dua nilai pressure
-      const results = (Math.abs(num1 - num2) / ((num1 + num2) / 2)) * 100;
+//       // Perhitungan perbedaan antara dua nilai pressure
+//       const results = (Math.abs(num1 - num2) / ((num1 + num2) / 2)) * 100;
 
-      // Apabila perbedaan lebih dari 50%
-      if (results >= 50) {
-        sendFCM(notifPayload);
-        functions.logger.log("Terjadi kebocoran.");
-        break;
-      } else {
-        functions.logger.log("Tidak terjadi kebocoran.");
-      }
-    }
-  });
+//       // Apabila perbedaan lebih dari 50%
+//       if (results >= 50) {
+//         sendFCM(notifPayload);
+//         functions.logger.log("Terjadi kebocoran.");
+//         break;
+//       } else {
+//         functions.logger.log("Tidak terjadi kebocoran.");
+//       }
+//     }
+//   });
