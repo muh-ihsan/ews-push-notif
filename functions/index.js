@@ -685,6 +685,9 @@ exports.sendBattery = functions.database
 //     // Untuk menambah keys pada object ke array
 //     const pressureKeys = Object.keys(pressureData);
 
+//     let kebocoran = false;
+//     const warningRef = admin.database().ref("ewsApp/warning");
+
 //     // Perbandingan nilai sensor
 //     for (let i = 0; i < pressureKeys.length; i++) {
 //       // Jika sudah mencapai iterasi terakhir, break
@@ -704,11 +707,24 @@ exports.sendBattery = functions.database
 
 //       // Apabila perbedaan lebih dari 50%
 //       if (results >= 50) {
-//         sendFCM(notifPayload);
-//         functions.logger.log("Terjadi kebocoran.");
+//         kebocoran = true;
 //         break;
 //       } else {
-//         functions.logger.log("Tidak terjadi kebocoran.");
+//         kebocoran = false;
 //       }
+//     }
+
+//     // Untuk menentukan kebocoran
+//     if (kebocoran) {
+//       sendFCM(notifPayload);
+//       warningRef.update({
+//         kebocoran: true,
+//       });
+//       functions.logger.log("Terjadi kebocoran.");
+//     } else {
+//       warningRef.update({
+//         kebocoran: false,
+//       });
+//       functions.logger.log("Tidak terjadi kebocoran.");
 //     }
 //   });
