@@ -137,7 +137,7 @@ exports.sendPanelVoltT = functions.database
       },
       notification: {
         title: "Volt T Undervolt!",
-        body: `${namaPanel} sedang mengalami undervolt! Value: ${currentValue}`,
+        body: `${namaPanel} sedang mengalami undervolt! Value: ${currentValue} V`,
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -151,7 +151,7 @@ exports.sendPanelVoltT = functions.database
       },
       notification: {
         title: "Volt T Overvolt!",
-        body: `${namaPanel} sedang mengalami Overvolt! Value: ${currentValue}`,
+        body: `${namaPanel} sedang mengalami Overvolt! Value: ${currentValue} V`,
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -188,7 +188,7 @@ exports.sendPanelCurrentR = functions.database
       },
       notification: {
         title: "Current R Undercurrent!",
-        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue}`,
+        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue} mA`,
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -202,7 +202,7 @@ exports.sendPanelCurrentR = functions.database
       },
       notification: {
         title: "Current R Overcurrent!",
-        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue}`,
+        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue} mA`,
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -239,7 +239,7 @@ exports.sendPanelCurrentS = functions.database
       },
       notification: {
         title: "Current S Undercurrent!",
-        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue}`,
+        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue} mA`,
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -253,7 +253,7 @@ exports.sendPanelCurrentS = functions.database
       },
       notification: {
         title: "Current S Overcurrent!",
-        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue}`,
+        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue} mA`,
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -290,7 +290,7 @@ exports.sendPanelCurrentT = functions.database
       },
       notification: {
         title: "Current T Undercurrent!",
-        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue}`,
+        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue} mA`,
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -304,7 +304,7 @@ exports.sendPanelCurrentT = functions.database
       },
       notification: {
         title: "Current T Overcurrent!",
-        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue}`,
+        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue} mA`,
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -628,6 +628,16 @@ exports.sendBattery = functions.database
       pressureSolarId
     );
 
+    // Cek value terdapat persen
+    let newCurrentValue, newBeforeValue;
+    if (currentValue.search("%") !== -1) {
+      newCurrentValue = currentValue.replace("%", "");
+      newBeforeValue = beforeValue.replace("%", "");
+    } else {
+      newCurrentValue = currentValue;
+      newBeforeValue = beforeValue;
+    }
+
     const notifPayload = {
       data: {
         jenisMonitor: "PressureSolar",
@@ -635,11 +645,11 @@ exports.sendBattery = functions.database
       },
       notification: {
         title: "Low Battery!",
-        body: `Baterai pada solar panel ${pressureSolarName} mencapai titik low. Value: ${currentValue}%`,
+        body: `Baterai pada solar panel ${pressureSolarName} mencapai titik low. Value: ${currentValue}`,
       },
     };
 
-    if (currentValue < 15 && beforeValue >= 15) {
+    if (newCurrentValue < 15 && newBeforeValue >= 15) {
       sendFCM(notifPayload);
     }
   });
