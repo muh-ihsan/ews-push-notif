@@ -24,7 +24,7 @@ exports.sendPanelVoltR = functions.database
     );
 
     // Get gauge value
-    const gaugeLimit = await getValue.getGaugeLimit("panel-pompa", "volt");
+    const gaugeLimit = await getValue.getGaugeLimit("panel-pompa", "voltR");
     const valueMin = gaugeLimit.min;
     const valueMax = gaugeLimit.max;
 
@@ -36,6 +36,8 @@ exports.sendPanelVoltR = functions.database
       notification: {
         title: "Volt R Undervolt!",
         body: `${namaPanel} sedang mengalami undervolt! Value: ${currentValue} V`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -50,6 +52,8 @@ exports.sendPanelVoltR = functions.database
       notification: {
         title: "Volt R Overvolt!",
         body: `${namaPanel} sedang mengalami Overvolt! Value: ${currentValue} V`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -75,7 +79,7 @@ exports.sendPanelVoltS = functions.database
     );
 
     // Get gauge value
-    const gaugeLimit = await getValue.getGaugeLimit("panel-pompa", "volt");
+    const gaugeLimit = await getValue.getGaugeLimit("panel-pompa", "voltS");
     const valueMin = gaugeLimit.min;
     const valueMax = gaugeLimit.max;
 
@@ -87,6 +91,8 @@ exports.sendPanelVoltS = functions.database
       notification: {
         title: "Volt S Undervolt!",
         body: `${namaPanel} sedang mengalami undervolt! Value: ${currentValue} V`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -101,6 +107,8 @@ exports.sendPanelVoltS = functions.database
       notification: {
         title: "Volt S Overvolt!",
         body: `${namaPanel} sedang mengalami Overvolt! Value: ${currentValue} V`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -126,7 +134,7 @@ exports.sendPanelVoltT = functions.database
     );
 
     // Get gauge value
-    const gaugeLimit = await getValue.getGaugeLimit("panel-pompa", "volt");
+    const gaugeLimit = await getValue.getGaugeLimit("panel-pompa", "voltT");
     const valueMin = gaugeLimit.min;
     const valueMax = gaugeLimit.max;
 
@@ -138,6 +146,8 @@ exports.sendPanelVoltT = functions.database
       notification: {
         title: "Volt T Undervolt!",
         body: `${namaPanel} sedang mengalami undervolt! Value: ${currentValue} V`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -152,6 +162,8 @@ exports.sendPanelVoltT = functions.database
       notification: {
         title: "Volt T Overvolt!",
         body: `${namaPanel} sedang mengalami Overvolt! Value: ${currentValue} V`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -177,7 +189,7 @@ exports.sendPanelCurrentR = functions.database
     );
 
     // Get gauge value
-    const gaugeLimit = await getValue.getGaugeLimit("panel-pompa", "current");
+    const gaugeLimit = await getValue.getGaugeLimit("panel-pompa", "currentR");
     const valueMin = gaugeLimit.min;
     const valueMax = gaugeLimit.max;
 
@@ -188,7 +200,9 @@ exports.sendPanelCurrentR = functions.database
       },
       notification: {
         title: "Current R Undercurrent!",
-        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue} mA`,
+        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue} A`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -202,7 +216,9 @@ exports.sendPanelCurrentR = functions.database
       },
       notification: {
         title: "Current R Overcurrent!",
-        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue} mA`,
+        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue} A`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -228,7 +244,7 @@ exports.sendPanelCurrentS = functions.database
     );
 
     // Get gauge value
-    const gaugeLimit = await getValue.getGaugeLimit("panel-pompa", "current");
+    const gaugeLimit = await getValue.getGaugeLimit("panel-pompa", "currentS");
     const valueMin = gaugeLimit.min;
     const valueMax = gaugeLimit.max;
 
@@ -239,7 +255,9 @@ exports.sendPanelCurrentS = functions.database
       },
       notification: {
         title: "Current S Undercurrent!",
-        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue} mA`,
+        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue} A`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -253,7 +271,9 @@ exports.sendPanelCurrentS = functions.database
       },
       notification: {
         title: "Current S Overcurrent!",
-        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue} mA`,
+        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue} A`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -279,7 +299,7 @@ exports.sendPanelCurrentT = functions.database
     );
 
     // Get gauge value
-    const gaugeLimit = await getValue.getGaugeLimit("panel-pompa", "current");
+    const gaugeLimit = await getValue.getGaugeLimit("panel-pompa", "currentT");
     const valueMin = gaugeLimit.min;
     const valueMax = gaugeLimit.max;
 
@@ -290,7 +310,9 @@ exports.sendPanelCurrentT = functions.database
       },
       notification: {
         title: "Current T Undercurrent!",
-        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue} mA`,
+        body: `${namaPanel} sedang mengalami undercurrent! Value: ${currentValue} A`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -304,7 +326,9 @@ exports.sendPanelCurrentT = functions.database
       },
       notification: {
         title: "Current T Overcurrent!",
-        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue} mA`,
+        body: `${namaPanel} sedang mengalami overcurrent! Value: ${currentValue} A`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -344,12 +368,43 @@ exports.sendLED = functions.database
         monitorId: panelPompaId,
       },
       notification: {
-        title: `${ledName} ON!`,
-        body: `Lampu ${ledName} menyala`,
+        title: `${ledName} ${currentValue}!`,
+        body: `Lampu ${ledName} ${currentValue}.`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
-    if (currentValue && !beforeValue) {
+    if (currentValue !== beforeValue) {
       sendFCM(notifPayload);
+    }
+  });
+
+exports.relayChange = functions.database
+  .ref("ewsApp/panel-pompa/{panelPompaId}/{relayId}/trigger")
+  .onWrite(async (change, context) => {
+    const { panelPompaId, relayId } = context.params;
+
+    const currentValue = change.after.val();
+    const beforeValue = change.before.val();
+
+    let oppRelay;
+    if (relayId == "relay1") {
+      oppRelay = "relay2";
+    } else {
+      oppRelay = "relay1";
+    }
+
+    functions.logger.log("currentValue: ", currentValue);
+    functions.logger.log("beforeValue: ", beforeValue);
+
+    if (currentValue !== beforeValue) {
+      await admin
+        .database()
+        .ref(`ewsApp/panel-pompa/${panelPompaId}/${oppRelay}`)
+        .update({
+          trigger: Number(!currentValue),
+        })
+        .catch(functions.logger.error);
     }
   });
 
@@ -382,6 +437,8 @@ exports.sendFlowRate = functions.database
       notification: {
         title: "Pipa Underflow!",
         body: `Pipa ${flowMeterName} sedang mengalami underflow! Value: ${currentValue} m3/h`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -396,6 +453,8 @@ exports.sendFlowRate = functions.database
       notification: {
         title: "Pipa Overflow!",
         body: `Pipa ${flowMeterName} sedang mengalami overflow! Value: ${currentValue} m3/h`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -432,6 +491,8 @@ exports.sendVelocity = functions.database
       notification: {
         title: "Pipa Under Velocity!",
         body: `Pipa ${flowMeterName} sedang mengalami under velocity! Value: ${currentValue} m/s`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -446,56 +507,8 @@ exports.sendVelocity = functions.database
       notification: {
         title: "Pipa Over Velocity!",
         body: `Pipa ${flowMeterName} sedang mengalami over velocity! Value: ${currentValue} m/s`,
-      },
-    };
-    if (currentValue > valueMax && beforeValue <= valueMax) {
-      sendFCM(notifOverPayload);
-    }
-  });
-
-exports.sendVelocity = functions.database
-  .ref("ewsApp/flow-meter/{flowMeterId}/velocity")
-  .onWrite(async (change, context) => {
-    const flowMeterId = context.params.flowMeterId;
-
-    const currentValue = change.after.val();
-    const beforeValue = change.before.val();
-    functions.logger.log("currentValue: ", currentValue);
-    functions.logger.log("beforeValue: ", beforeValue);
-
-    // Get Nama Flow Meter
-    const flowMeterName = await getValue.getMonitorName(
-      "flow-meter",
-      flowMeterId
-    );
-
-    // Get gauge value
-    const gaugeLimit = await getValue.getGaugeLimit("flow-meter", "velocity");
-    const valueMin = gaugeLimit.min;
-    const valueMax = gaugeLimit.max;
-
-    const notifUnderPayload = {
-      data: {
-        jenisMonitor: "FlowMeter",
-        monitorId: flowMeterId,
-      },
-      notification: {
-        title: "Pipa Under Velocity!",
-        body: `Pipa ${flowMeterName} sedang mengalami under velocity! Value: ${currentValue} m/s`,
-      },
-    };
-    if (currentValue < valueMin && beforeValue >= valueMin) {
-      sendFCM(notifUnderPayload);
-    }
-
-    const notifOverPayload = {
-      data: {
-        jenisMonitor: "FlowMeter",
-        monitorId: flowMeterId,
-      },
-      notification: {
-        title: "Pipa Over Velocity!",
-        body: `Pipa ${flowMeterName} sedang mengalami over velocity! Value: ${currentValue} m/s`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -532,6 +545,8 @@ exports.sendVelocity = functions.database
 //       notification: {
 //         title: "Energy Flow Rate Pipa Under!",
 //         body: `Pipa ${flowMeterName} sedang mengalami under energy flow rate! Value: ${currentValue} GJ/h`,
+//         sound: "notifsound.wav",
+//         android_channel_id: "ews_warning",
 //       },
 //     };
 //     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -546,6 +561,8 @@ exports.sendVelocity = functions.database
 //       notification: {
 //         title: "Energy Flow Rate Pipa Over!",
 //         body: `Pipa ${flowMeterName} sedang mengalami over energy flow rate! Value: ${currentValue} GJ/h`,
+//         sound: "notifsound.wav",
+//         android_channel_id: "ews_warning",
 //       },
 //     };
 //     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -582,6 +599,8 @@ exports.sendVelocity = functions.database
 //       notification: {
 //         title: "Fluid Sound Speed Pipa Under!",
 //         body: `Pipa ${flowMeterName} sedang mengalami under fluid sound speed! Value: ${currentValue} m/s`,
+//         sound: "notifsound.wav",
+//         android_channel_id: "ews_warning",
 //       },
 //     };
 //     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -596,6 +615,8 @@ exports.sendVelocity = functions.database
 //       notification: {
 //         title: "Fluid Sound Speed Pipa Over!",
 //         body: `Pipa ${flowMeterName} sedang mengalami over fluid sound speed! Value: ${currentValue} m/s`,
+//         sound: "notifsound.wav",
+//         android_channel_id: "ews_warning",
 //       },
 //     };
 //     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -620,10 +641,7 @@ exports.sendTempInlet = functions.database
     );
 
     // Get gauge value
-    const gaugeLimit = await getValue.getGaugeLimit(
-      "flow-meter",
-      "temperature"
-    );
+    const gaugeLimit = await getValue.getGaugeLimit("flow-meter", "tempInlet");
     const valueMin = gaugeLimit.min;
     const valueMax = gaugeLimit.max;
 
@@ -635,6 +653,8 @@ exports.sendTempInlet = functions.database
       notification: {
         title: "Temperature Inlet Pipa Under Heat!",
         body: `Inlet pipa ${flowMeterName} sedang mengalami under heat! Value: ${currentValue} °C`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -649,6 +669,8 @@ exports.sendTempInlet = functions.database
       notification: {
         title: "Temperature Inlet Pipa Over Heat!",
         body: `Inlet pipa ${flowMeterName} sedang mengalami over heat! Value: ${currentValue} °C`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -673,10 +695,7 @@ exports.sendTempOutlet = functions.database
     );
 
     // Get gauge value
-    const gaugeLimit = await getValue.getGaugeLimit(
-      "flow-meter",
-      "temperature"
-    );
+    const gaugeLimit = await getValue.getGaugeLimit("flow-meter", "tempOutlet");
     const valueMin = gaugeLimit.min;
     const valueMax = gaugeLimit.max;
 
@@ -688,6 +707,8 @@ exports.sendTempOutlet = functions.database
       notification: {
         title: "Temperature Outlet Pipa Under Heat!",
         body: `Outlet pipa ${flowMeterName} sedang mengalami under heat! Value: ${currentValue} °C`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -702,6 +723,8 @@ exports.sendTempOutlet = functions.database
       notification: {
         title: "Temperature Outlet Pipa Over Heat!",
         body: `Outlet pipa ${flowMeterName} sedang mengalami over heat! Value: ${currentValue} °C`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -710,7 +733,7 @@ exports.sendTempOutlet = functions.database
   });
 
 exports.sendPressure = functions.database
-  .ref("ewsApp/pressure-solar/{pressureSolarId}/pressurePsi")
+  .ref("ewsApp/pressure-solar/{pressureSolarId}/pressureBar")
   .onWrite(async (change, context) => {
     const pressureSolarId = context.params.pressureSolarId;
 
@@ -728,7 +751,7 @@ exports.sendPressure = functions.database
     // Get gauge value
     const gaugeLimit = await getValue.getGaugeLimit(
       "pressure-solar",
-      "pressurePsi"
+      "pressureBar"
     );
     const valueMin = gaugeLimit.min;
     const valueMax = gaugeLimit.max;
@@ -740,7 +763,9 @@ exports.sendPressure = functions.database
       },
       notification: {
         title: "Pipa Under Pressure!",
-        body: `Pipa ${pressureSolarName} sedang mengalami under pressure! Value: ${currentValue} psi`,
+        body: `Pipa ${pressureSolarName} sedang mengalami under pressure! Value: ${currentValue} bar`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
@@ -754,7 +779,9 @@ exports.sendPressure = functions.database
       },
       notification: {
         title: "Pipa Over Pressure!",
-        body: `Pipa ${pressureSolarName} sedang mengalami over pressure! Value: ${currentValue} psi`,
+        body: `Pipa ${pressureSolarName} sedang mengalami over pressure! Value: ${currentValue} bar`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
@@ -796,6 +823,8 @@ exports.sendBattery = functions.database
       notification: {
         title: "Low Battery!",
         body: `Baterai pada solar panel ${pressureSolarName} mencapai titik low. Value: ${currentValue}`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
       },
     };
 
@@ -804,87 +833,100 @@ exports.sendBattery = functions.database
     }
   });
 
-// exports.deteksiBocorPressure = functions.database
-//   .ref("ewsApp/pressure-solar/{pressureSolarId}/pressurePsi")
-//   .onWrite(async (change, context) => {
-//     pressureSolarId = context.params.pressureSolarId;
+exports.deteksiBocorPressure = functions.database
+  .ref("ewsApp/pressure-solar/{pressureSolarId}/pressureBar")
+  .onWrite(async (change, context) => {
+    pressureSolarId = context.params.pressureSolarId;
 
-//     const currentValue = change.after.val();
-//     const beforeValue = change.before.val();
-//     functions.logger.log("currentValue: ", currentValue);
-//     functions.logger.log("beforeValue: ", beforeValue);
+    const currentValue = change.after.val();
+    const beforeValue = change.before.val();
+    functions.logger.log("currentValue: ", currentValue);
+    functions.logger.log("beforeValue: ", beforeValue);
 
-//     // Mengambil objek pada pressure solar
-//     let pressureData;
-//     await admin
-//       .database()
-//       .ref(`ewsApp/pressure-solar`)
-//       .once("value")
-//       .then((snapshot) => {
-//         pressureData = snapshot.val();
-//         functions.logger.log("Pressure data: ", snapshot.val());
-//       })
-//       .catch((err) => {
-//         functions.logger.error("Error: ", err);
-//       });
+    // Mengambil objek pada pressure solar
+    let pressureData;
+    await admin
+      .database()
+      .ref(`ewsApp/pressure-solar`)
+      .once("value")
+      .then((snapshot) => {
+        pressureData = snapshot.val();
+        functions.logger.log("Pressure data: ", snapshot.val());
+      })
+      .catch((err) => {
+        functions.logger.error("Error: ", err);
+      });
 
-//     functions.logger.log("PressureData return: ", pressureData);
+    functions.logger.log("PressureData return: ", pressureData);
 
-//     // Payload untuk notifikasi
-//     const notifPayload = {
-//       data: {
-//         jenisMonitor: "PressureSolar",
-//         monitorId: pressureSolarId,
-//       },
-//       notification: {
-//         title: "Terdapat anomali pada tekanan pipa!",
-//         body: `Terdapat kemungkinan adanya kebocoran pada pipa.`,
-//       },
-//     };
+    // Payload untuk notifikasi
+    const notifPayload = {
+      data: {
+        jenisMonitor: "PressureSolar",
+        monitorId: pressureSolarId,
+      },
+      notification: {
+        title: "Terdapat anomali pada tekanan pipa!",
+        body: `Terdapat kemungkinan adanya kebocoran pada pipa.`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
+      },
+    };
 
-//     // Untuk menambah keys pada object ke array
-//     const pressureKeys = Object.keys(pressureData);
+    // Untuk menambah keys pada object ke array
+    const pressureKeys = Object.keys(pressureData);
 
-//     let kebocoran = false;
-//     const warningRef = admin.database().ref("ewsApp/warning");
+    let kebocoran = false;
+    const warningRef = admin.database().ref("ewsApp/warning");
 
-//     // Perbandingan nilai sensor
-//     for (let i = 0; i < pressureKeys.length; i++) {
-//       // Jika sudah mencapai iterasi terakhir, break
-//       if (i == pressureKeys.length - 1) {
-//         break;
-//       }
+    // Perbandingan nilai sensor
+    for (let i = 0; i < pressureKeys.length; i++) {
+      // Jika sudah mencapai iterasi terakhir, break
+      if (i == pressureKeys.length - 1) {
+        break;
+      }
 
-//       // Mengambil nilai pressure dari iterasi sekarang dan iterasi berikutnya
-//       const num1 = Number(pressureData[pressureKeys[i]]["pressurePsi"]);
-//       const num2 = Number(pressureData[pressureKeys[i + 1]]["pressurePsi"]);
+      // Mengambil nilai pressure dari iterasi sekarang dan iterasi berikutnya
+      const num1 = Number(pressureData[pressureKeys[i]]["pressureBar"]);
+      const num2 = Number(pressureData[pressureKeys[i + 1]]["pressureBar"]);
 
-//       functions.logger.log("num1: ", num1);
-//       functions.logger.log("num2: ", num2);
+      functions.logger.log("num1: ", num1);
+      functions.logger.log("num2: ", num2);
 
-//       // Perhitungan perbedaan antara dua nilai pressure
-//       const results = (Math.abs(num1 - num2) / ((num1 + num2) / 2)) * 100;
+      // Perhitungan perbedaan antara dua nilai pressure
+      const results = (Math.abs(num1 - num2) / ((num1 + num2) / 2)) * 100;
 
-//       // Apabila perbedaan lebih dari 50%
-//       if (results >= 50) {
-//         kebocoran = true;
-//         break;
-//       } else {
-//         kebocoran = false;
-//       }
-//     }
+      // Apabila perbedaan lebih dari 50%
+      if (results >= 50) {
+        kebocoran = true;
+        break;
+      } else {
+        kebocoran = false;
+      }
+    }
 
-//     // Untuk menentukan kebocoran
-//     if (kebocoran) {
-//       sendFCM(notifPayload);
-//       warningRef.update({
-//         kebocoran: true,
-//       });
-//       functions.logger.log("Terjadi kebocoran.");
-//     } else {
-//       warningRef.update({
-//         kebocoran: false,
-//       });
-//       functions.logger.log("Tidak terjadi kebocoran.");
-//     }
-//   });
+    // Untuk menentukan kebocoran
+    if (kebocoran) {
+      let bocorValue;
+      await admin
+        .database()
+        .ref(`${warningRef}/kebocoran`)
+        .once("value")
+        .then((response) => {
+          bocorValue = response.val();
+        })
+        .catch(console.error);
+      if (bocorValue === false) {
+        sendFCM(notifPayload);
+      }
+      warningRef.update({
+        kebocoran: true,
+      });
+      functions.logger.log("Terjadi kebocoran.");
+    } else {
+      warningRef.update({
+        kebocoran: false,
+      });
+      functions.logger.log("Tidak terjadi kebocoran.");
+    }
+  });
