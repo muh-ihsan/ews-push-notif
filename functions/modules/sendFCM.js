@@ -1,9 +1,9 @@
 const admin = require("firebase-admin");
 
-module.exports = (payload) => {
+module.exports = (payload, notifType = "notif") => {
   admin
     .messaging()
-    .sendToTopic("notif", payload, { priority: "high" })
+    .sendToTopic(notifType, payload, { priority: "high" })
     .then(() => {
       console.log("FCM: Notification sends successfully.");
     })

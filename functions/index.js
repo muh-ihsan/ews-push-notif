@@ -380,7 +380,7 @@ exports.sendLED = functions.database
         android_channel_id: "ews_warning",
       },
     };
-    if (change.before.exists()) {
+    if (change.before.exists() && change.after.exists()) {
       if (currentValue !== beforeValue) {
         sendFCM(notifPayload);
       }
@@ -405,14 +405,16 @@ exports.relayChange = functions.database
     functions.logger.log("currentValue: ", currentValue);
     functions.logger.log("beforeValue: ", beforeValue);
 
-    if (currentValue !== beforeValue) {
-      await admin
-        .database()
-        .ref(`ewsApp/panel-pompa/${panelPompaId}/${oppRelay}`)
-        .update({
-          trigger: Number(!currentValue),
-        })
-        .catch(functions.logger.error);
+    if (change.before.exists() && change.after.exists()) {
+      if (currentValue !== beforeValue) {
+        await admin
+          .database()
+          .ref(`ewsApp/panel-pompa/${panelPompaId}/${oppRelay}`)
+          .update({
+            trigger: Number(!currentValue),
+          })
+          .catch(functions.logger.error);
+      }
     }
   });
 
