@@ -345,6 +345,12 @@ exports.sendLED = functions.database
     const currentValue = change.after.val();
     const beforeValue = change.before.val();
 
+    // Get Monitor name
+    const namaPanel = await getValue.getMonitorName(
+      "panel-pompa",
+      panelPompaId
+    );
+
     // Get Nama LED
     let ledName;
     await admin
@@ -369,13 +375,15 @@ exports.sendLED = functions.database
       },
       notification: {
         title: `${ledName} ${currentValue}!`,
-        body: `Lampu ${ledName} ${currentValue}.`,
+        body: `Lampu ${ledName} pada ${namaPanel} ${currentValue}.`,
         sound: "notifsound.wav",
         android_channel_id: "ews_warning",
       },
     };
-    if (currentValue !== beforeValue) {
-      sendFCM(notifPayload);
+    if (change.before.exists()) {
+      if (currentValue !== beforeValue) {
+        sendFCM(notifPayload);
+      }
     }
   });
 
