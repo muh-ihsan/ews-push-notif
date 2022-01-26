@@ -1,7 +1,7 @@
 const admin = require("firebase-admin");
 
-module.exports = async (jenisMonitor, indicator) => {
-  const baseRef = `ewsApp/others/notifTime/${jenisMonitor}`;
+module.exports = async (jenisMonitor, monitorId, indicator) => {
+  const baseRef = `ewsApp/others/notifTime/${jenisMonitor}/${monitorId}`;
   const timeNow = new Date();
 
   try {

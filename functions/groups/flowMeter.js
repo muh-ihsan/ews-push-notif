@@ -40,7 +40,7 @@ exports.sendFlowRate = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      const canSend = await isTime("flowMeter", "flowRate");
+      const canSend = await isTime("flowMeter", flowMeterId, "flowRate");
       if (canSend) {
         sendFCM(notifUnderPayload);
       }
@@ -59,7 +59,7 @@ exports.sendFlowRate = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      const canSend = await isTime("flowMeter", "flowRate");
+      const canSend = await isTime("flowMeter", flowMeterId, "flowRate");
       if (canSend) {
         sendFCM(notifOverPayload);
       }
@@ -100,7 +100,7 @@ exports.sendVelocity = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      const canSend = await isTime("flowMeter", "velocity");
+      const canSend = await isTime("flowMeter", flowMeterId, "velocity");
       if (canSend) {
         sendFCM(notifUnderPayload);
       }
@@ -119,7 +119,7 @@ exports.sendVelocity = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      const canSend = await isTime("flowMeter", "velocity");
+      const canSend = await isTime("flowMeter", flowMeterId, "velocity");
       if (canSend) {
         sendFCM(notifOverPayload);
       }
@@ -268,7 +268,7 @@ exports.sendTempInlet = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      const canSend = await isTime("flowMeter", "tempInlet");
+      const canSend = await isTime("flowMeter", flowMeterId, "tempInlet");
       if (canSend) {
         sendFCM(notifUnderPayload);
       }
@@ -287,7 +287,7 @@ exports.sendTempInlet = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      const canSend = await isTime("flowMeter", "tempInlet");
+      const canSend = await isTime("flowMeter", flowMeterId, "tempInlet");
       if (canSend) {
         sendFCM(notifOverPayload);
       }
@@ -328,7 +328,7 @@ exports.sendTempOutlet = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      const canSend = await isTime("flowMeter", "tempOutlet");
+      const canSend = await isTime("flowMeter", flowMeterId, "tempOutlet");
       if (canSend) {
         sendFCM(notifUnderPayload);
       }
@@ -347,7 +347,7 @@ exports.sendTempOutlet = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      const canSend = await isTime("flowMeter", "tempOutlet");
+      const canSend = await isTime("flowMeter", flowMeterId, "tempOutlet");
       if (canSend) {
         sendFCM(notifOverPayload);
       }
