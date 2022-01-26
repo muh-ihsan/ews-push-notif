@@ -4,6 +4,7 @@ const admin = require("firebase-admin");
 const getValue = require("../modules/getValue");
 const setValue = require("../modules/setValue");
 const sendFCM = require("../modules/sendFCM");
+const isTime = require("../modules/timer");
 
 exports.sendPressure = functions.database
   .ref("ewsApp/pressure-solar/{pressureSolarId}/pressureBar")
@@ -42,7 +43,14 @@ exports.sendPressure = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      sendFCM(notifUnderPayload);
+      const canSend = await isTime(
+        "pressureSolar",
+        pressureSolarId,
+        "pressureBar"
+      );
+      if (canSend) {
+        sendFCM(notifUnderPayload);
+      }
     }
 
     const notifOverPayload = {
@@ -58,7 +66,14 @@ exports.sendPressure = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      sendFCM(notifOverPayload);
+      const canSend = await isTime(
+        "pressureSolar",
+        pressureSolarId,
+        "pressureBar"
+      );
+      if (canSend) {
+        sendFCM(notifOverPayload);
+      }
     }
   });
 
@@ -102,7 +117,10 @@ exports.sendBattery = functions.database
     };
 
     if (newCurrentValue < 15 && newBeforeValue >= 15) {
-      sendFCM(notifPayload);
+      const canSend = await isTime("pressureSolar", pressureSolarId, "battery");
+      if (canSend) {
+        sendFCM(notifPayload);
+      }
     }
   });
 
@@ -180,26 +198,34 @@ exports.deteksiBocorPressure = functions.database
 
     // Untuk menentukan kebocoran
     if (kebocoran) {
-      let bocorValue;
-      await admin
-        .database()
-        .ref(`${warningRef}/kebocoran`)
-        .once("value")
-        .then((response) => {
-          bocorValue = response.val();
-        })
-        .catch(console.error);
-      if (bocorValue === false) {
+      // let bocorValue;
+      // await admin
+      //   .database()
+      //   .ref(`${warningRef}/kebocoran`)
+      //   .once("value")
+      //   .then((response) => {
+      //     bocorValue = response.val();
+      //   })
+      //   .catch(console.error);
+      // if (bocorValue === false) {
+      //   sendFCM(notifPayload);
+      // }
+      // warningRef.update({
+      //   kebocoran: true,
+      // });
+      const canSend = await isTime(
+        "pressureSolar",
+        "pressureSolarAll",
+        "deteksiBocor"
+      );
+      if (canSend) {
         sendFCM(notifPayload);
       }
-      warningRef.update({
-        kebocoran: true,
-      });
       functions.logger.log("Terjadi kebocoran.");
     } else {
-      warningRef.update({
-        kebocoran: false,
-      });
+      // warningRef.update({
+      //   kebocoran: false,
+      // });
       functions.logger.log("Tidak terjadi kebocoran.");
     }
   });
