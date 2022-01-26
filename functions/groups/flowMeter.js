@@ -4,6 +4,7 @@ const admin = require("firebase-admin");
 const getValue = require("../modules/getValue");
 const setValue = require("../modules/setValue");
 const sendFCM = require("../modules/sendFCM");
+const isTime = require("../modules/timer");
 
 exports.sendFlowRate = functions.database
   .ref("ewsApp/flow-meter/{flowMeterId}/flowRate")
@@ -39,7 +40,10 @@ exports.sendFlowRate = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      sendFCM(notifUnderPayload);
+      const canSend = await isTime("flowMeter", "flowRate");
+      if (canSend) {
+        sendFCM(notifUnderPayload);
+      }
     }
 
     const notifOverPayload = {
@@ -55,7 +59,10 @@ exports.sendFlowRate = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      sendFCM(notifOverPayload);
+      const canSend = await isTime("flowMeter", "flowRate");
+      if (canSend) {
+        sendFCM(notifOverPayload);
+      }
     }
   });
 
@@ -93,7 +100,10 @@ exports.sendVelocity = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      sendFCM(notifUnderPayload);
+      const canSend = await isTime("flowMeter", "velocity");
+      if (canSend) {
+        sendFCM(notifUnderPayload);
+      }
     }
 
     const notifOverPayload = {
@@ -109,7 +119,10 @@ exports.sendVelocity = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      sendFCM(notifOverPayload);
+      const canSend = await isTime("flowMeter", "velocity");
+      if (canSend) {
+        sendFCM(notifOverPayload);
+      }
     }
   });
 
@@ -255,7 +268,10 @@ exports.sendTempInlet = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      sendFCM(notifUnderPayload);
+      const canSend = await isTime("flowMeter", "tempInlet");
+      if (canSend) {
+        sendFCM(notifUnderPayload);
+      }
     }
 
     const notifOverPayload = {
@@ -271,7 +287,10 @@ exports.sendTempInlet = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      sendFCM(notifOverPayload);
+      const canSend = await isTime("flowMeter", "tempInlet");
+      if (canSend) {
+        sendFCM(notifOverPayload);
+      }
     }
   });
 
@@ -309,7 +328,10 @@ exports.sendTempOutlet = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      sendFCM(notifUnderPayload);
+      const canSend = await isTime("flowMeter", "tempOutlet");
+      if (canSend) {
+        sendFCM(notifUnderPayload);
+      }
     }
 
     const notifOverPayload = {
@@ -325,7 +347,10 @@ exports.sendTempOutlet = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      sendFCM(notifOverPayload);
+      const canSend = await isTime("flowMeter", "tempOutlet");
+      if (canSend) {
+        sendFCM(notifOverPayload);
+      }
     }
   });
 

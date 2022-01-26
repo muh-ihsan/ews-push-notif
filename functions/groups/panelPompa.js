@@ -4,6 +4,7 @@ const admin = require("firebase-admin");
 const getValue = require("../modules/getValue");
 const setValue = require("../modules/setValue");
 const sendFCM = require("../modules/sendFCM");
+const isTime = require("../modules/timer");
 
 exports.sendPanelVoltR = functions.database
   .ref("ewsApp/panel-pompa/{panelPompaId}/voltR")
@@ -40,7 +41,10 @@ exports.sendPanelVoltR = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      sendFCM(notifUnderPayload);
+      const canSend = await isTime("panelPompa", "voltR");
+      if (canSend) {
+        sendFCM(notifUnderPayload);
+      }
     }
 
     const notifOverPayload = {
@@ -56,7 +60,10 @@ exports.sendPanelVoltR = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      sendFCM(notifOverPayload);
+      const canSend = await isTime("panelPompa", "voltR");
+      if (canSend) {
+        sendFCM(notifOverPayload);
+      }
     }
   });
 
@@ -94,8 +101,12 @@ exports.sendPanelVoltS = functions.database
         android_channel_id: "ews_warning",
       },
     };
+
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      sendFCM(notifUnderPayload);
+      const canSend = await isTime("panelPompa", "voltS");
+      if (canSend) {
+        sendFCM(notifUnderPayload);
+      }
     }
 
     const notifOverPayload = {
@@ -111,7 +122,10 @@ exports.sendPanelVoltS = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      sendFCM(notifOverPayload);
+      const canSend = await isTime("panelPompa", "voltS");
+      if (canSend) {
+        sendFCM(notifOverPayload);
+      }
     }
   });
 
@@ -150,7 +164,10 @@ exports.sendPanelVoltT = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      sendFCM(notifUnderPayload);
+      const canSend = await isTime("panelPompa", "voltT");
+      if (canSend) {
+        sendFCM(notifUnderPayload);
+      }
     }
 
     const notifOverPayload = {
@@ -166,7 +183,10 @@ exports.sendPanelVoltT = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      sendFCM(notifOverPayload);
+      const canSend = await isTime("panelPompa", "voltT");
+      if (canSend) {
+        sendFCM(notifOverPayload);
+      }
     }
   });
 
@@ -205,7 +225,10 @@ exports.sendPanelCurrentR = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      sendFCM(notifUnderPayload);
+      const canSend = await isTime("panelPompa", "currentR");
+      if (canSend) {
+        sendFCM(notifUnderPayload);
+      }
     }
 
     const notifOverPayload = {
@@ -221,7 +244,10 @@ exports.sendPanelCurrentR = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      sendFCM(notifOverPayload);
+      const canSend = await isTime("panelPompa", "currentR");
+      if (canSend) {
+        sendFCM(notifOverPayload);
+      }
     }
   });
 
@@ -260,7 +286,10 @@ exports.sendPanelCurrentS = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      sendFCM(notifUnderPayload);
+      const canSend = await isTime("panelPompa", "currentS");
+      if (canSend) {
+        sendFCM(notifUnderPayload);
+      }
     }
 
     const notifOverPayload = {
@@ -276,7 +305,10 @@ exports.sendPanelCurrentS = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      sendFCM(notifOverPayload);
+      const canSend = await isTime("panelPompa", "currentS");
+      if (canSend) {
+        sendFCM(notifOverPayload);
+      }
     }
   });
 
@@ -315,7 +347,10 @@ exports.sendPanelCurrentT = functions.database
       },
     };
     if (currentValue < valueMin && beforeValue >= valueMin) {
-      sendFCM(notifUnderPayload);
+      const canSend = await isTime("panelPompa", "currentT");
+      if (canSend) {
+        sendFCM(notifUnderPayload);
+      }
     }
 
     const notifOverPayload = {
@@ -331,7 +366,10 @@ exports.sendPanelCurrentT = functions.database
       },
     };
     if (currentValue > valueMax && beforeValue <= valueMax) {
-      sendFCM(notifOverPayload);
+      const canSend = await isTime("panelPompa", "currentT");
+      if (canSend) {
+        sendFCM(notifOverPayload);
+      }
     }
   });
 
