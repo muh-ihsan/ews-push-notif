@@ -13,7 +13,7 @@ module.exports = async (jenisMonitor, monitorId, indicator) => {
       await admin
         .database()
         .ref(baseRef)
-        .set({
+        .update({
           [indicator]: timeLimit.toISOString(),
         });
       return true;
@@ -24,7 +24,7 @@ module.exports = async (jenisMonitor, monitorId, indicator) => {
         await admin
           .database()
           .ref(baseRef)
-          .set({
+          .update({
             [indicator]: timeNow.toISOString(),
           });
         return true;
