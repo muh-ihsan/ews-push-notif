@@ -1,6 +1,11 @@
 const admin = require("firebase-admin");
 
-module.exports = async (jenisMonitor, monitorId, indicator) => {
+module.exports = async (
+  jenisMonitor,
+  monitorId,
+  indicator,
+  timerSeconds = 60
+) => {
   const baseRef = `ewsApp/others/notifTime/${jenisMonitor}/${monitorId}`;
   const timeNow = new Date();
 
@@ -9,7 +14,7 @@ module.exports = async (jenisMonitor, monitorId, indicator) => {
     const timeDb = await admin.database().ref(timeRef).get();
     if (!timeDb.exists()) {
       const timeLimit = new Date();
-      timeLimit.setSeconds(timeLimit.getSeconds() + 60);
+      timeLimit.setSeconds(timeLimit.getSeconds() + timerSeconds);
       await admin
         .database()
         .ref(baseRef)
@@ -20,7 +25,7 @@ module.exports = async (jenisMonitor, monitorId, indicator) => {
     } else {
       const timeFromDb = new Date(timeDb.val());
       if (timeNow > timeFromDb) {
-        timeNow.setSeconds(timeNow.getSeconds() + 60);
+        timeNow.setSeconds(timeNow.getSeconds() + timerSeconds);
         await admin
           .database()
           .ref(baseRef)
