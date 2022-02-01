@@ -179,7 +179,7 @@ exports.deteksiBocorPressure = functions.database
     const pressureKeys = Object.keys(pressureData);
 
     let kebocoran = false;
-    const kebocoranRef = admin.database().ref("ewsApp/warning/kebocoran");
+    let pressureBocorId = "pressureSolar1";
     const warningRef = admin.database().ref("ewsApp/warning");
 
     // Perbandingan nilai sensor
@@ -193,15 +193,17 @@ exports.deteksiBocorPressure = functions.database
       const num1 = Number(pressureData[pressureKeys[i]]["pressureBar"]);
       const num2 = Number(pressureData[pressureKeys[i + 1]]["pressureBar"]);
 
-      functions.logger.log("num1: ", num1);
-      functions.logger.log("num2: ", num2);
+      // functions.logger.log("ID pressure 1: ", pressureKeys[i]);
+      // functions.logger.log("ID pressure 2: ", pressureKeys[i + 1]);
+      // functions.logger.log("num1: ", num1);
+      // functions.logger.log("num2: ", num2);
 
       // Perhitungan perbedaan antara dua nilai pressure
       const results = (Math.abs(num1 - num2) / ((num1 + num2) / 2)) * 100;
 
-      // Apabila perbedaan lebih dari 50%
-      if (results >= percent) {
+      if (results >= 50) {
         kebocoran = true;
+        pressureBocorId = pressureKeys[i];
         break;
       } else {
         kebocoran = false;
@@ -212,15 +214,21 @@ exports.deteksiBocorPressure = functions.database
     if (kebocoran) {
       let bocorValue;
 
-      await kebocoranRef
+      const pressureBocorRef = admin
+        .database()
+        .ref(`ewsApp/pressure-solar/${pressureBocorId}`);
+      await pressureBocorRef
         .once("value")
         .then((response) => {
-          bocorValue = response.val();
+          bocorValue = response.val().bocor;
         })
         .catch(console.error);
       if (bocorValue === false) {
         sendFCM(notifPayload);
       }
+      pressureBocorRef.update({
+        bocor: true,
+      });
       warningRef.update({
         kebocoran: true,
       });
@@ -235,6 +243,11 @@ exports.deteksiBocorPressure = functions.database
       // }
       functions.logger.log("Terjadi kebocoran.");
     } else {
+      for (let pressureId of pressureKeys) {
+        admin.database().ref(`ewsApp/pressure-solar/${pressureId}`).update({
+          bocor: false,
+        });
+      }
       warningRef.update({
         kebocoran: false,
       });
@@ -249,6 +262,7 @@ exports.pressureSolarBaru = functions.database
     const IdNum = pressureSolarId.substring(13);
     const objBaru = {
       nama: "Pressure Solar " + IdNum,
+      bocor: false,
       current: 0,
       pressureBar: 0,
       pressurePsi: 0,
