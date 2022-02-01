@@ -116,7 +116,7 @@ exports.sendBattery = functions.database
       },
     };
 
-    if (newCurrentValue < 15 && newBeforeValue >= 15) {
+    if (newCurrentValue < 10 && newBeforeValue >= 10) {
       const canSend = await isTime("pressureSolar", pressureSolarId, "battery");
       if (canSend) {
         sendFCM(notifPayload);
@@ -129,10 +129,10 @@ exports.deteksiBocorPressure = functions.database
   .onWrite(async (change, context) => {
     pressureSolarId = context.params.pressureSolarId;
 
-    const currentValue = change.after.val();
-    const beforeValue = change.before.val();
-    functions.logger.log("currentValue: ", currentValue);
-    functions.logger.log("beforeValue: ", beforeValue);
+    // const currentValue = change.after.val();
+    // const beforeValue = change.before.val();
+    // functions.logger.log("currentValue: ", currentValue);
+    // functions.logger.log("beforeValue: ", beforeValue);
 
     // Mengambil objek pada pressure solar
     let pressureData;
@@ -151,7 +151,15 @@ exports.deteksiBocorPressure = functions.database
     functions.logger.log("PressureData return: ", pressureData);
 
     // Mengambil nilai persen batas bocor
-    const percent = await getValue.getGaugeLimit("panel-pompa", "selisihBocor");
+    let percent;
+    await admin
+      .database()
+      .ref("ewsApp/gaugeValue/pressure-solar/selisihBocor")
+      .once("value")
+      .then((snap) => {
+        percent = snap.val();
+      });
+    functions.logger.log("Persen: ", percent);
 
     // Payload untuk notifikasi
     const notifPayload = {
@@ -171,14 +179,15 @@ exports.deteksiBocorPressure = functions.database
     const pressureKeys = Object.keys(pressureData);
 
     let kebocoran = false;
+    const kebocoranRef = admin.database().ref("ewsApp/warning/kebocoran");
     const warningRef = admin.database().ref("ewsApp/warning");
 
     // Perbandingan nilai sensor
-    for (let i = 0; i < pressureKeys.length; i++) {
-      // Jika sudah mencapai iterasi terakhir, break
-      if (i == pressureKeys.length - 1) {
-        break;
-      }
+    for (let i = 0; i < pressureKeys.length - 1; i++) {
+      // // Jika sudah mencapai iterasi terakhir, break
+      // if (i == pressureKeys.length - 1) {
+      //   break;
+      // }
 
       // Mengambil nilai pressure dari iterasi sekarang dan iterasi berikutnya
       const num1 = Number(pressureData[pressureKeys[i]]["pressureBar"]);
@@ -201,35 +210,34 @@ exports.deteksiBocorPressure = functions.database
 
     // Untuk menentukan kebocoran
     if (kebocoran) {
-      // let bocorValue;
-      // await admin
-      //   .database()
-      //   .ref(`${warningRef}/kebocoran`)
-      //   .once("value")
-      //   .then((response) => {
-      //     bocorValue = response.val();
-      //   })
-      //   .catch(console.error);
-      // if (bocorValue === false) {
-      //   sendFCM(notifPayload);
-      // }
-      // warningRef.update({
-      //   kebocoran: true,
-      // });
-      const canSend = await isTime(
-        "pressureSolar",
-        "pressureSolarAll",
-        "deteksiBocor",
-        30
-      );
-      if (canSend) {
+      let bocorValue;
+
+      await kebocoranRef
+        .once("value")
+        .then((response) => {
+          bocorValue = response.val();
+        })
+        .catch(console.error);
+      if (bocorValue === false) {
         sendFCM(notifPayload);
       }
+      warningRef.update({
+        kebocoran: true,
+      });
+      // const canSend = await isTime(
+      //   "pressureSolar",
+      //   "pressureSolarAll",
+      //   "deteksiBocor",
+      //   30
+      // );
+      // if (canSend) {
+      //   sendFCM(notifPayload);
+      // }
       functions.logger.log("Terjadi kebocoran.");
     } else {
-      // warningRef.update({
-      //   kebocoran: false,
-      // });
+      warningRef.update({
+        kebocoran: false,
+      });
       functions.logger.log("Tidak terjadi kebocoran.");
     }
   });
