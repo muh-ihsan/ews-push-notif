@@ -455,6 +455,28 @@ exports.relayChange = functions.database
     }
   });
 
+exports.calculatePower = functions.database
+  .ref("ewsApp/panel-pompa/{panelPompaId}/powerPositif")
+  .onWrite(async (change, context) => {
+    const { panelPompaId } = context.params;
+    const powerPositif = change.after.val();
+    try {
+      const powerNegatifFetch = await admin
+        .database()
+        .ref(`ewsApp/panel-pompa/${panelPompaId}/powerNegatif`)
+        .once("value");
+      const powerNegatif = powerNegatifFetch.val();
+      functions.logger.log("power positif: ", powerPositif);
+      functions.logger.log("power negatif: ", powerNegatif);
+      const power = powerPositif - powerNegatif;
+      await admin.database().ref(`ewsApp/panel-pompa/${panelPompaId}`).update({
+        power,
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
 exports.panelPompaBaru = functions.database
   .ref("ewsApp/panel-pompa/{panelPompaId}")
   .onCreate(async (change, context) => {

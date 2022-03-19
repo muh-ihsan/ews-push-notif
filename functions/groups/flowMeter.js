@@ -126,113 +126,128 @@ exports.sendVelocity = functions.database
     }
   });
 
-// exports.sendEnergyFlow = functions.database
-//   .ref("ewsApp/flow-meter/{flowMeterId}/energyFlow")
-//   .onWrite(async (change, context) => {
-//     const flowMeterId = context.params.flowMeterId;
+exports.sendEnergyFlow = functions.database
+  .ref("ewsApp/flow-meter/{flowMeterId}/energyFlow")
+  .onWrite(async (change, context) => {
+    const flowMeterId = context.params.flowMeterId;
 
-//     const currentValue = change.after.val();
-//     const beforeValue = change.before.val();
-//     functions.logger.log("currentValue: ", currentValue);
-//     functions.logger.log("beforeValue: ", beforeValue);
+    const currentValue = change.after.val();
+    const beforeValue = change.before.val();
+    functions.logger.log("currentValue: ", currentValue);
+    functions.logger.log("beforeValue: ", beforeValue);
 
-//     // Get Nama Flow Meter
-//     const flowMeterName = await getValue.getMonitorName(
-//       "flow-meter",
-//       flowMeterId
-//     );
+    // Get Nama Flow Meter
+    const flowMeterName = await getValue.getMonitorName(
+      "flow-meter",
+      flowMeterId
+    );
 
-//     // Get gauge value
-//     const gaugeLimit = await getValue.getGaugeLimit("flow-meter", "energyFlowRate");
-//     const valueMin = gaugeLimit.min;
-//     const valueMax = gaugeLimit.max;
+    // Get gauge value
+    const gaugeLimit = await getValue.getGaugeLimit(
+      "flow-meter",
+      "energyFlowRate"
+    );
+    const valueMin = gaugeLimit.min;
+    const valueMax = gaugeLimit.max;
 
-//     const notifUnderPayload = {
-//       data: {
-//         jenisMonitor: "FlowMeter",
-//         monitorId: flowMeterId,
-//       },
-//       notification: {
-//         title: "Energy Flow Rate Pipa Under!",
-//         body: `Pipa ${flowMeterName} sedang mengalami under energy flow rate! Value: ${currentValue} GJ/h`,
-//         sound: "notifsound.wav",
-//         android_channel_id: "ews_warning",
-//       },
-//     };
-//     if (currentValue < valueMin && beforeValue >= valueMin) {
-//       sendFCM(notifUnderPayload);
-//     }
+    const notifUnderPayload = {
+      data: {
+        jenisMonitor: "FlowMeter",
+        monitorId: flowMeterId,
+      },
+      notification: {
+        title: "Energy Flow Rate Pipa Under!",
+        body: `Pipa ${flowMeterName} sedang mengalami under energy flow rate! Value: ${currentValue} GJ/h`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
+      },
+    };
+    if (currentValue < valueMin && beforeValue >= valueMin) {
+      const canSend = await isTime("flowMeter", flowMeterId, "energyFlow");
+      if (canSend) {
+        sendFCM(notifUnderPayload);
+      }
+    }
 
-//     const notifOverPayload = {
-//       data: {
-//         jenisMonitor: "FlowMeter",
-//         monitorId: flowMeterId,
-//       },
-//       notification: {
-//         title: "Energy Flow Rate Pipa Over!",
-//         body: `Pipa ${flowMeterName} sedang mengalami over energy flow rate! Value: ${currentValue} GJ/h`,
-//         sound: "notifsound.wav",
-//         android_channel_id: "ews_warning",
-//       },
-//     };
-//     if (currentValue > valueMax && beforeValue <= valueMax) {
-//       sendFCM(notifOverPayload);
-//     }
-//   });
+    const notifOverPayload = {
+      data: {
+        jenisMonitor: "FlowMeter",
+        monitorId: flowMeterId,
+      },
+      notification: {
+        title: "Energy Flow Rate Pipa Over!",
+        body: `Pipa ${flowMeterName} sedang mengalami over energy flow rate! Value: ${currentValue} GJ/h`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
+      },
+    };
+    if (currentValue > valueMax && beforeValue <= valueMax) {
+      const canSend = await isTime("flowMeter", flowMeterId, "energyFlow");
+      if (canSend) {
+        sendFCM(notifOverPayload);
+      }
+    }
+  });
 
-// exports.sendFluidSound = functions.database
-//   .ref("ewsApp/flow-meter/{flowMeterId}/fluidSoundSpeed")
-//   .onWrite(async (change, context) => {
-//     const flowMeterId = context.params.flowMeterId;
+exports.sendFluidSound = functions.database
+  .ref("ewsApp/flow-meter/{flowMeterId}/fluidSoundSpeed")
+  .onWrite(async (change, context) => {
+    const flowMeterId = context.params.flowMeterId;
 
-//     const currentValue = change.after.val();
-//     const beforeValue = change.before.val();
-//     functions.logger.log("currentValue: ", currentValue);
-//     functions.logger.log("beforeValue: ", beforeValue);
+    const currentValue = change.after.val();
+    const beforeValue = change.before.val();
+    functions.logger.log("currentValue: ", currentValue);
+    functions.logger.log("beforeValue: ", beforeValue);
 
-//     // Get Nama Flow Meter
-//     const flowMeterName = await getValue.getMonitorName(
-//       "flow-meter",
-//       flowMeterId
-//     );
+    // Get Nama Flow Meter
+    const flowMeterName = await getValue.getMonitorName(
+      "flow-meter",
+      flowMeterId
+    );
 
-//     // Get gauge value
-//     const gaugeLimit = await getValue.getGaugeLimit("flow-meter", "fluidSound");
-//     const valueMin = gaugeLimit.min;
-//     const valueMax = gaugeLimit.max;
+    // Get gauge value
+    const gaugeLimit = await getValue.getGaugeLimit("flow-meter", "fluidSound");
+    const valueMin = gaugeLimit.min;
+    const valueMax = gaugeLimit.max;
 
-//     const notifUnderPayload = {
-//       data: {
-//         jenisMonitor: "FlowMeter",
-//         monitorId: flowMeterId,
-//       },
-//       notification: {
-//         title: "Fluid Sound Speed Pipa Under!",
-//         body: `Pipa ${flowMeterName} sedang mengalami under fluid sound speed! Value: ${currentValue} m/s`,
-//         sound: "notifsound.wav",
-//         android_channel_id: "ews_warning",
-//       },
-//     };
-//     if (currentValue < valueMin && beforeValue >= valueMin) {
-//       sendFCM(notifUnderPayload);
-//     }
+    const notifUnderPayload = {
+      data: {
+        jenisMonitor: "FlowMeter",
+        monitorId: flowMeterId,
+      },
+      notification: {
+        title: "Fluid Sound Speed Pipa Under!",
+        body: `Pipa ${flowMeterName} sedang mengalami under fluid sound speed! Value: ${currentValue} m/s`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
+      },
+    };
+    if (currentValue < valueMin && beforeValue >= valueMin) {
+      const canSend = await isTime("flowMeter", flowMeterId, "fluidSound");
+      if (canSend) {
+        sendFCM(notifUnderPayload);
+      }
+    }
 
-//     const notifOverPayload = {
-//       data: {
-//         jenisMonitor: "FlowMeter",
-//         monitorId: flowMeterId,
-//       },
-//       notification: {
-//         title: "Fluid Sound Speed Pipa Over!",
-//         body: `Pipa ${flowMeterName} sedang mengalami over fluid sound speed! Value: ${currentValue} m/s`,
-//         sound: "notifsound.wav",
-//         android_channel_id: "ews_warning",
-//       },
-//     };
-//     if (currentValue > valueMax && beforeValue <= valueMax) {
-//       sendFCM(notifOverPayload);
-//     }
-//   });
+    const notifOverPayload = {
+      data: {
+        jenisMonitor: "FlowMeter",
+        monitorId: flowMeterId,
+      },
+      notification: {
+        title: "Fluid Sound Speed Pipa Over!",
+        body: `Pipa ${flowMeterName} sedang mengalami over fluid sound speed! Value: ${currentValue} m/s`,
+        sound: "notifsound.wav",
+        android_channel_id: "ews_warning",
+      },
+    };
+    if (currentValue > valueMax && beforeValue <= valueMax) {
+      const canSend = await isTime("flowMeter", flowMeterId, "fluidSound");
+      if (canSend) {
+        sendFCM(notifOverPayload);
+      }
+    }
+  });
 
 exports.sendTempInlet = functions.database
   .ref("ewsApp/flow-meter/{flowMeterId}/tempInlet")
