@@ -60,3 +60,45 @@ exports.telemetryFetchHour2 = functions.database
       console.error(e);
     }
   });
+
+exports.lastUpdatePanelPompa = functions.database
+  .ref("ewsApp/panel-pompa/{panelPompaId}")
+  .onWrite(async (change, context) => {
+    const { panelPompaId } = context.params;
+    const timeNow = new Date();
+    const lastUpdate = {};
+    lastUpdate[panelPompaId] = timeNow.toISOString();
+
+    await admin
+      .database()
+      .ref("ewsApp/others/lastUpdate/panel-pompa")
+      .update(lastUpdate);
+  });
+
+exports.lastUpdateFlowMeter = functions.database
+  .ref("ewsApp/flow-meter/{flowMeterId}")
+  .onWrite(async (change, context) => {
+    const { flowMeterId } = context.params;
+    const timeNow = new Date();
+    const lastUpdate = {};
+    lastUpdate[flowMeterId] = timeNow.toISOString();
+
+    await admin
+      .database()
+      .ref("ewsApp/others/lastUpdate/flow-meter")
+      .update(lastUpdate);
+  });
+
+exports.lastUpdatePressureSolar = functions.database
+  .ref("ewsApp/pressure-solar/{pressureSolarId}")
+  .onWrite(async (change, context) => {
+    const { pressureSolarId } = context.params;
+    const timeNow = new Date();
+    const lastUpdate = {};
+    lastUpdate[pressureSolarId] = timeNow.toISOString();
+
+    await admin
+      .database()
+      .ref("ewsApp/others/lastUpdate/pressure-solar")
+      .update(lastUpdate);
+  });
